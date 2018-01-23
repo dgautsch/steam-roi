@@ -1,11 +1,12 @@
 const express = require('express')
 const logger = require('morgan')
+const path = require('path')
 const routes = require('./routes')
 const app = express()
 
 app.use(logger('dev'))
-app.use(express.static('public'))
-app.use('', routes)
+app.use('/', routes)
+app.use(express.static(path.join(__dirname, '../public'), {extensions: ['json']}))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
