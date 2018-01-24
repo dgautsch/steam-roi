@@ -44,7 +44,6 @@ class SteamAPI {
       steamID = info.replace(/^(?:\/?profiles\/)?(\d{17}).*$/, '$1');
     } else if (/^(?:\/?id\/)?\w{2,32}.*$/.test(info)) {
       steamURL = info.match(/[^\/]+$/);
-      console.log(steamURL);
     } else {
       const url = parse(info);
       if (url.hostname === 'steamcommunity.com') {
