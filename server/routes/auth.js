@@ -2,15 +2,13 @@ const r = module.exports = require('express').Router()
 const passport = require('passport')
 
 r.get('/auth/steam',
-  passport.authenticate('steam'),
+  passport.authenticate('steam', { failureRedirect: '/' }),
   function (req, res) {
-    // The request will be redirected to Steam for authentication, so
-    // this function will not be called.
+    res.redirect('/')
   })
 
 r.get('/auth/steam/return',
-  passport.authenticate('steam', { failureRedirect: '/login' }),
+  passport.authenticate('steam', { failureRedirect: '/' }),
   function (req, res) {
-    // Successful authentication, redirect home.
     res.redirect('/')
   })
