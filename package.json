@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/dgautsch/steam-roi#readme",
   "dependencies": {
+    "async": "^2.6.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
@@ -37,6 +38,7 @@
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "express-react-views": "^0.10.5",
     "express-session": "^1.15.6",
     "morgan": "^1.9.0",
     "node-steam": "0.0.1",

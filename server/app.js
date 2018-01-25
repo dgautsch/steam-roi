@@ -33,6 +33,9 @@ function (identifier, profile, done) {
 app.use(session({
   secret: 'Secrets',
   name: 'Steam Session',
+  cookie: {
+    maxAge: 3600000
+  },
   resave: true,
   saveUninitialized: true}))
 
@@ -43,10 +46,14 @@ app.use(logger('dev'))
 
 app.use('/', routes)
 app.set('views', path.join(__dirname, '../public'))
-app.set('view engine', 'ejs')
+app.set('view engine', 'jsx')
+app.engine('jsx', require('express-react-views').createEngine())
 app.use(express.static(path.join(__dirname, '../public')))
 app.get('/', function (req, res) {
-  res.render('index', { user: req.user })
+  res.render('index', { 
+    user: req.user,
+    title: 'Steam ROI'
+  })
 })
 app.use(middleware.error)
 app.use(middleware.notfound)
