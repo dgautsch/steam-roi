@@ -56,11 +56,13 @@ function getUserSummary (id, req, res) {
 }
 
 r.get('/api/v1/user/games', (req, res) => {
-  if (req.query.id || req.user.id) getUserOwnedGames(req.query.id, req, res)
+  let steamId = req.query.id || req.user.id
+  if (steamId) getUserOwnedGames(steamId, req, res)
 })
 
 r.get('/api/v1/user', (req, res) => {
-  if (req.query.id || req.user.id) getUserSummary(req.query.id, req, res)
+  let steamId = req.query.id || req.user.id
+  if (steamId) getUserSummary(steamId, req, res)
 })
 
 // r.get('/api/v1/user', auth.isAuthenticated, function (req, res) {
