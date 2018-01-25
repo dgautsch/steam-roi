@@ -1,6 +1,6 @@
 const r = module.exports = require('express').Router()
 const async = require('async')
-const SteamApi = require('../lib/steamapi')
+const SteamApi = require('../lib/SteamAPI')
 const steam = new SteamApi(process.env.STEAM_API_KEY, {cache: true})
 // const auth = require('../middleware/auth')
 
