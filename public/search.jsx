@@ -32,7 +32,12 @@ class Search extends React.Component {
             <ul>
               {this.data.map((item, idx) => (
                 <li className='results' key={idx}>
+                  <p>{item.name}</p>
+                  <p>{item.price_overview.final}</p>
+                  <p>{item.about_the_game}</p>
+                  <p>{item.name}</p>
                   <pre>{JSON.stringify(item)}</pre>
+                  }
                 </li>
               ))
               }

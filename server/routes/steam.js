@@ -8,7 +8,8 @@ function getUserOwnedGames (id, req, res) {
   if (id) {
     steam.getUserOwnedGames(id).then(data => {
       let gameResults = []
-      let gameIds = data.filter((game, idx) => {
+      let userOwnedGames = data
+      let gameIds = userOwnedGames.filter((game, idx) => {
         if (idx <= 6) {
           return game
         }
@@ -74,7 +75,6 @@ r.get('/api/v1/user', (req, res) => {
 })
 r.get('/search', (req, res) => {
   if (req.query.id) {
-    console.log(req.query.id)
     getUserOwnedGames(req.query.id, req, res)
   } else {
     console.log('i did else')
