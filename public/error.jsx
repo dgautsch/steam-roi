@@ -6,7 +6,7 @@ class Error extends React.Component {
     return (
       <DefaultLayout title={this.props.title}>
         <div>
-          <h2>Woops!, We encountered an error.</h2>
+          <h2>Whoops! We encountered an error.</h2>
           <a href='/'>Return Home</a>
           <hr />
           <pre>{this.props.error.message}</pre>

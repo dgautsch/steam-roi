@@ -1,5 +1,25 @@
+:root {
+  --color-gray: #282828;
+  --color-white: #FFF;
+}
 body {
-  background: #282828;
+  background: var(--color-gray);
   color: #FFF;
   padding: 2em;
+}
+
+.account-card {
+  padding: 0;
+}
+
+.account-card--title {
+  padding: 0;
+}
+
+.account-card .card-title {
+  margin: 0 0 1em 0;
+}
+.input-field input[type=search]:focus {
+    background-color: var(--color-gray);
+    color: var(--color-white);
 }

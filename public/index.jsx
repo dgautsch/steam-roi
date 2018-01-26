@@ -1,7 +1,7 @@
 const React = require('react')
 const DefaultLayout = require('./layouts/default')
 
-class HomeScreen extends React.Component {
+class Home extends React.Component {
   constructor (props) {
     super(props)
     this.isUser = this.props.user
@@ -30,4 +30,4 @@ class HomeScreen extends React.Component {
   }
 }
 
-module.exports = HomeScreen
+module.exports = Home
