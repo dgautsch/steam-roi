@@ -13,7 +13,6 @@ class Account extends React.Component {
                 <h2 className='card-title account-card--title'>{this.props.user.displayName}</h2>
                 <p><img src={this.props.user.photos[2].value} alt={this.props.user.displayName} /></p>
                 <p>ID: {this.props.user.id}</p>
-                <p>{JSON.stringify(this.props.settings)}</p>
               </div>
             </div>
           </div>

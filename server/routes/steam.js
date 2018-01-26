@@ -77,7 +77,6 @@ r.get('/search', (req, res) => {
   if (req.query.id) {
     getUserOwnedGames(req.query.id, req, res)
   } else {
-    console.log('i did else')
     res.render('search', { 
       title: 'Search'
     })
