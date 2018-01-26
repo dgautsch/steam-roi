@@ -19,7 +19,6 @@ class Home extends React.Component {
             <h2>Hello, {this.props.user.displayName}. - <a href='logout'>Logout</a></h2>
             <ul>
               <li><a href='account'>See Account Information</a></li>
-              <li><a href='/api/v1/user/games'>See User Games API (Only the first 5 games)</a></li>
               <li><a href='/api/v1/user'>See User Details API</a></li>
             </ul>
           </div>

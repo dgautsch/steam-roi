@@ -33,11 +33,9 @@ class Search extends React.Component {
               {this.data.map((item, idx) => (
                 <li className='results' key={idx}>
                   <p>{item.name}</p>
-                  <p>{item.price_overview.final}</p>
-                  <p>{item.about_the_game}</p>
-                  <p>{item.name}</p>
-                  <pre>{JSON.stringify(item)}</pre>
-                  }
+                  <p>{item.price_overview.final.toLocaleString('en-US')}</p>
+                  <img src={item.header_image} />
+                  <hr />
                 </li>
               ))
               }
