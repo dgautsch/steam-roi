@@ -11,8 +11,9 @@ Eventually, when you login you will be able to see the games you own and how muc
 
 ## In Progress
 
-[] Lazy load the games. Currently rate limited by steam. Can only do 200 games every 5 minutes.
-[] Provide user feedback when search is in progress.
+- [ ] Lazy load the games. Currently rate limited by steam. Can only do 200 games every 5 minutes.
+
+- [ ] Provide user feedback when search is in progress.
 
 ## Libraries Used
 
