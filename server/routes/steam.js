@@ -11,7 +11,7 @@ function getUserOwnedGames (id, req, res) {
       let userOwnedGames = data
       let results = []
       let gameIds = userOwnedGames.filter((game, idx) => {
-        if (idx <= 15) {
+        if (idx <= 20 && game.playTime !== 0) {
           return game
         }
       }).map((game) => {
