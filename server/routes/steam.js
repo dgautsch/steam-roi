@@ -91,6 +91,7 @@ r.get('/api/v1/user', (req, res) => {
 })
 r.get('/search', (req, res) => {
   if (req.query.id) {
+    console.log(`Searching for ${req.query.id}`)
     getUserOwnedGames(req.query.id, req, res)
   } else {
     res.render('search', { 
