@@ -8,7 +8,7 @@ class Home extends React.Component {
   }
   render () {
     return (
-      <DefaultLayout title={this.props.title}>
+      <DefaultLayout title={this.props.title} loggedIn={this.isUser}>
         <div className='steam-roi-home'> {!this.isUser &&
           <div className='steam-roi-login'>
             <h2>Welcome! Please log in.</h2>
@@ -16,11 +16,9 @@ class Home extends React.Component {
           </div>
         } {this.isUser &&
           <div className='steam-roi-loggedin'>
-            <h2>Hello, {this.props.user.displayName}. - <a href='logout'>Logout</a></h2>
-            <ul>
-              <li><a href='account'>See Account Information</a></li>
-              <li><a href='/api/v1/user'>See User Details API</a></li>
-            </ul>
+            <h2>Hello, {this.props.user.displayName}.</h2>
+            <p>Now that you're logged in go over to the <a href='/account'>account page</a> and get your steam ID. Or you can click the results button to see the value of your games</p>
+            <a className='waves-effect waves-light btn-large' href={'/search?id=' + this.props.user.id}>Get your results!</a>
           </div>
         }
         </div>

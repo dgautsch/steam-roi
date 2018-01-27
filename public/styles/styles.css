@@ -20,3 +20,7 @@ body {
 .account-card .card-title {
   margin: 0 0 1em 0;
 }
+
+.nav-wrapper {
+  padding: 0 1em;
+}

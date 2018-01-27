@@ -13,6 +13,7 @@ class Account extends React.Component {
                 <h2 className='card-title account-card--title'>{this.props.user.displayName}</h2>
                 <p><img src={this.props.user.photos[2].value} alt={this.props.user.displayName} /></p>
                 <p>ID: {this.props.user.id}</p>
+                <p><a href={'/search?id=' + this.props.user.id}>Get your results!</a></p>
               </div>
             </div>
           </div>

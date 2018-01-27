@@ -15,12 +15,12 @@ class Search extends React.Component {
           <div className='card-panel red lighten-3'>That user ID is invalid.</div>
         }
         <div className='row'>
-          <div className='col s6'>
+          <div className='col s12 m6'>
             <h5>Search for a user</h5>
             <p>Use a steam id to find what games a user plays, how much they cost, and what their value per dollar is. You can login to find your steam id on the <a href='/auth/steam'>account page.</a></p>
             <p>If you don't know a user to look up, here is a sample ID: <pre>76561198028619700</pre></p>
           </div>
-          <div className='col s6'>
+          <div className='col s12 m6'>
             <div className='card-panel black'>
               <div className='input-field'>
                 <form role='search' method='get' className='form' action='/search'>
@@ -33,7 +33,7 @@ class Search extends React.Component {
           {this.gameData &&
           <div className='col s12'>
             {this.gameData.map((item, idx) => (
-              <div className='col s6' key={idx}>
+              <div className='col s12 m6' key={idx}>
                 <Card data={item} />
               </div>
             ))}
