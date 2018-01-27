@@ -1,6 +1,7 @@
 :root {
   --color-gray: #282828;
   --color-white: #FFF;
+  --color-black: #000;
 }
 body {
   background: var(--color-gray);
@@ -18,8 +19,4 @@ body {
 
 .account-card .card-title {
   margin: 0 0 1em 0;
-}
-.input-field input[type=search]:focus {
-    background-color: var(--color-gray);
-    color: var(--color-white);
 }

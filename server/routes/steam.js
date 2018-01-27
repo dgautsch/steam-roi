@@ -9,8 +9,10 @@ function getUserOwnedGames (id, req, res) {
     steam.getUserOwnedGames(id).then(data => {
       let gameResults = []
       let userOwnedGames = data
+      let results = []
+      console.log(userOwnedGames)
       let gameIds = userOwnedGames.filter((game, idx) => {
-        if (idx <= 6) {
+        if (idx <= 30 && game.playTime !== 0) {
           return game
         }
       }).map((game) => {
@@ -37,8 +39,22 @@ function getUserOwnedGames (id, req, res) {
 
       q.drain = function () {
         if (req.query.id) {
-          res.status(200).render('search', { 
-            data: gameResults
+          let userResults = userOwnedGames.filter((userGame) => {
+            return gameResults.some((gameInfo) => {
+              return userGame.appID === gameInfo.steam_appid
+            })
+          }).map((data) => {
+            return {
+              steam_appid: data.appID,
+              playTime: data.playTime
+            }
+          })
+          userResults.forEach((item, idx) => {
+            results.push(Object.assign({}, item, gameResults[idx]))
+          })
+          res.status(200).render('search', {
+            title: 'Search Results',
+            data: results
           })
         } else {
           res.status(200).render('search')
