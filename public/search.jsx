@@ -17,7 +17,7 @@ class Search extends React.Component {
         <div className='row'>
           <div className='col s6'>
             <h5>Search for a user</h5>
-            <p>Use a steam id to find what games a user plays, how much they cost, and what their value per dollar is. You can find a user's steam <a href='https://steamidfinder.com/'>ID here.</a></p>
+            <p>Use a steam id to find what games a user plays, how much they cost, and what their value per dollar is. You can login to find your steam id on the <a href='/auth/steam'>account page.</a></p>
             <p>If you don't know a user to look up, here is a sample ID: <pre>76561198028619700</pre></p>
           </div>
           <div className='col s6'>
