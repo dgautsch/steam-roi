@@ -2,7 +2,7 @@ const r = module.exports = require('express').Router()
 const async = require('async')
 const SteamApi = require('../lib/SteamAPI')
 const steam = new SteamApi(process.env.STEAM_API_KEY, {cache: true})
-const auth = require('../middleware/auth')
+// const auth = require('../middleware/auth')
 
 function getUserOwnedGames (id, req, res) {
   if (id) {
@@ -10,9 +10,8 @@ function getUserOwnedGames (id, req, res) {
       let gameResults = []
       let userOwnedGames = data
       let results = []
-      console.log(userOwnedGames)
       let gameIds = userOwnedGames.filter((game, idx) => {
-        if (idx <= 20) {
+        if (idx <= 15) {
           return game
         }
       }).map((game) => {
