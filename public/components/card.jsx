@@ -22,7 +22,8 @@ class Card extends React.Component {
         </div>
         <div className='card-content black-text'>
           <p>Playtime: {this.game.playTime} hours</p>
-          <p>Cost: ${(this.game.price_overview.final / 100).toFixed(2)} Value: {this.pricePerHour(this.game.price_overview.final, this.game.playTime)}</p>
+          <p>Cost: ${(this.game.price_overview.final / 100).toFixed(2)}</p> 
+          <p>Value: {this.pricePerHour(this.game.price_overview.final, this.game.playTime)}</p>
         </div>
         <div className='card-action'>
           <a href={this.game.website}>Visit Game Site</a>

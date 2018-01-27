@@ -5,7 +5,6 @@ class DefaultLayout extends React.Component {
   constructor (props) {
     super(props)
     this.navigation = props.navigation
-    this.isLoggedIn = props.isUser
   }
   render () {
     return (
@@ -22,7 +21,7 @@ class DefaultLayout extends React.Component {
 
         <body>
           <div className='container'>
-            <Navbar isLoggedIn={this.isLoggedIn} />
+            <Navbar />
             {this.props.children}
           </div>
           <script src='https://code.jquery.com/jquery-3.3.1.min.js' />
