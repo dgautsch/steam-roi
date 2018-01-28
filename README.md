@@ -15,6 +15,8 @@ Eventually, when you login you will be able to see the games you own and how muc
 
 - [ ] Provide user feedback when search is in progress.
 
+- [ ] Request Caching
+
 ## Libraries Used
 
 https://www.npmjs.com/package/steam-api (Had to slightly modify this)

@@ -16,6 +16,9 @@ class Card extends React.Component {
     if (playtime === 0) {
       return 'Unplayed, no value yet.'
     }
+    if (playtime < 60) {
+      return cost / 100
+    }
     return (((parseInt(cost) / 100) / (parseInt(playtime) / 60))).toFixed(2)
   }
 
