@@ -22,6 +22,10 @@ class Card extends React.Component {
     return (((parseInt(cost) / 100) / (parseInt(playtime) / 60))).toFixed(2)
   }
 
+  priceIsDefined () {
+    return this.game.price_overview !== undefined
+  }
+
   render () {
     return (
       <div className='card hoverable'>
@@ -31,8 +35,8 @@ class Card extends React.Component {
         </div>
         <div className='card-content black-text'>
           <p>Playtime: {this.minutesToHours(this.game.playTime)} </p>
-          <p>Cost: ${(this.game.price_overview.final / 100).toFixed(2)}</p> 
-          <p>Value Per Hour: ${this.pricePerHour(this.game.price_overview.final, this.game.playTime)}</p>
+          <p>Cost: {this.priceIsDefined() ? '$' + (this.game.price_overview.initial / 100).toFixed(2) : 'No Price Defined'}</p>
+          <p>Value Per Hour: {this.priceIsDefined() ? '$' + this.pricePerHour(this.game.price_overview.initial, this.game.playTime) : 'No Price Defined'}</p>
         </div>
         <div className='card-action'>
           <a href={this.game.website}>Visit Game Site</a>

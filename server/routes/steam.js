@@ -11,7 +11,7 @@ function getUserOwnedGames (id, req, res) {
       let userOwnedGames = data
       let results = []
       let gameIds = userOwnedGames.filter((game, idx) => {
-        if (idx <= 20 && game.playTime !== 0) {
+        if (idx <= 100 && game.playTime !== 0) {
           return game
         }
       }).map((game) => {
@@ -28,7 +28,7 @@ function getUserOwnedGames (id, req, res) {
         }
       }
 
-      let q = async.queue(getGameDetails, 1)
+      let q = async.queue(getGameDetails, 3)
 
       q.push(gameIds, (error) => {
         if (error) {
@@ -79,11 +79,6 @@ function getUserSummary (id, req, res) {
   })
 }
 
-r.get('/api/v1/user/games', (req, res) => {
-  let steamId = req.query.id || req.user.id
-  if (steamId) getUserOwnedGames(steamId, req, res)
-})
-
 r.get('/api/v1/user', (req, res) => {
   let steamId = req.query.id || req.user.id
   if (steamId) getUserSummary(steamId, req, res)
@@ -98,8 +93,3 @@ r.get('/search', (req, res) => {
     })
   }
 })
-// r.get('/', auth.isAuthenticated, (req, res) => {
-//   if (req.user.id) {
-//     getUserOwnedGames(req.user.id, req, res)
-//   }
-// })
