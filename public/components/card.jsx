@@ -36,7 +36,7 @@ class Card extends React.Component {
         <div className='card-content black-text'>
           <p>Playtime: {this.minutesToHours(this.game.playTime)} </p>
           <p>Cost: {this.priceIsDefined() ? '$' + (this.game.price_overview.initial / 100).toFixed(2) : 'No Price Defined'}</p>
-          <p>Value Per Hour: {this.priceIsDefined() ? '$' + this.pricePerHour(this.game.price_overview.initial, this.game.playTime) : 'No Price Defined'}</p>
+          <p>Entertainment Cost Per Hour: {this.priceIsDefined() ? '$' + this.pricePerHour(this.game.price_overview.initial, this.game.playTime) : 'No Price Defined'}</p>
         </div>
         <div className='card-action'>
           <a href={this.game.website}>Visit Game Site</a>
