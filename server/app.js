@@ -50,7 +50,7 @@ app.set('view engine', 'jsx')
 app.engine('jsx', require('express-react-views').createEngine())
 app.use(express.static(path.join(__dirname, '../public')))
 app.get('/', function (req, res) {
-  res.render('index', { 
+  res.render('index', {
     user: req.user,
     title: 'Steam ROI'
   })

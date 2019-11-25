@@ -1,4 +1,3 @@
-require('./config.js')
 const app = require('./app.js')
 const debug = require('debug')('myapp:server')
 const http = require('http')

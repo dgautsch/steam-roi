@@ -4,9 +4,9 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon --watch server server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r dotenv/config server/index.js dotenv_config_path=/config/vars/.env",
+    "start:debug": "node --insepct-brk -r dotenv/config server/index.js dotenv_config_path=/config/vars/.env",
+    "dev": "nodemon --watch server server/index.js"
   },
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "express-validator": "^5.0.0",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-steam": "^1.0.8",
+    "passport-steam": "^1.0.12",
     "react": "^15.6.2",
     "react-dom": "^16.0.1",
     "steamapi": "^2.0.7"
