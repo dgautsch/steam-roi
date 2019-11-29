@@ -9,7 +9,11 @@ module.exports = (url, headers) => {
   return new Promise((resolve, reject) => {
     fetch(options, res => {
       let data = ''
-      res.on('data', chunk => data += chunk)
+      res.on('data', (chunk) => {
+        let data
+        data += chunk
+        return data
+      })
       res.once('end', () => {
         if (res.statusCode === 500) return reject(new Error('internal server error'))
         if (res.statusCode === 403) return reject(new Error('invalid key'))
