@@ -4,8 +4,8 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config server/index.js dotenv_config_path=/config/vars/.env",
-    "start:debug": "node --insepct-brk -r dotenv/config server/index.js dotenv_config_path=/config/vars/.env",
+    "start": "node -r dotenv/config server/index.js dotenv_config_path=$(pwd)/config/vars/.env",
+    "start:debug": "node --inspect-brk -r dotenv/config server/index.js dotenv_config_path=$(pwd)/config/vars/.env",
     "dev": "nodemon --watch server server/index.js"
   },
   "repository": {
@@ -25,28 +25,28 @@
   "homepage": "https://github.com/dgautsch/steam-roi#readme",
   "dependencies": {
     "async": "^2.6.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
-    "concurrently": "^3.5.1",
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "express-react-views": "^0.10.5",
+    "express-handlebars": "^3.1.0",
     "express-session": "^1.15.6",
     "express-validator": "^5.0.0",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-steam": "^1.0.12",
-    "react": "^15.6.2",
-    "react-dom": "^16.0.1",
-    "steamapi": "^2.0.7"
+    "steamapi": "^2.0.7",
+    "vue": "^2.6.10",
+    "vue-server-renderer": "^2.6.10"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
     "nodemon": "^1.12.1",
     "standard": "^10.0.3",
+    "webpack": "^4.41.2",
     "webpack-dev-server": "^2.11.5"
   },
   "standard": {
