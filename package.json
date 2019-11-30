@@ -4,9 +4,13 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config server/index.js dotenv_config_path=$(pwd)/config/vars/.env",
-    "start:debug": "node --inspect-brk -r dotenv/config server/index.js dotenv_config_path=$(pwd)/config/vars/.env",
-    "dev": "nodemon --watch server server/index.js"
+    "start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
+    "start:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
+    "dev": "nodemon --watch ./server --exec npm start",
+    "test": "modern test",
+    "format": "modern format",
+    "lint": "modern lint",
+    "precommit": "modern precommit"
   },
   "repository": {
     "type": "git",
@@ -29,7 +33,6 @@
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "express-handlebars": "^3.1.0",
     "express-session": "^1.15.6",
     "express-validator": "^5.0.0",
     "morgan": "^1.9.1",
@@ -44,8 +47,13 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
+    "eslint-plugin-jest": "^23.1.0",
+    "lint-staged": "^10.0.0-beta.6",
+    "modern-node": "^2.6.0",
     "nodemon": "^1.12.1",
+    "prettier-standard": "^16.0.0",
     "standard": "^10.0.3",
+    "vue-ssr-webpack-plugin": "^3.0.0",
     "webpack": "^4.41.2",
     "webpack-dev-server": "^2.11.5"
   },
