@@ -1,4 +1,5 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const webpack = require('webpack')
 
 const baseConfig = {
   devtool: '#eval-source-map',
@@ -32,7 +33,6 @@ const baseConfig = {
               'sass-loader?indentedSyntax'
             ]
           }
-          // other vue-loader options go here
         }
       },
       {
@@ -49,7 +49,25 @@ const baseConfig = {
       }
     ]
   },
-  plugins: [new VueLoaderPlugin()]
+  devServer: {
+    historyApiFallback: true,
+    hot: true,
+    inline: true,
+    host: 'localhost',
+    port: 8080,
+    proxy: {
+      '^/api/*': {
+        target: 'http://localhost:3000/api/',
+        secure: false
+      }
+    }
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin({
+      multiStep: true
+    }),
+    new VueLoaderPlugin()
+  ]
 }
 
 // if (process.env.NODE_ENV === 'production') {
