@@ -1,6 +1,6 @@
 const React = require('react')
 const Navbar = require('../components/navbar')
- 
+
 class DefaultLayout extends React.Component {
   constructor (props) {
     super(props)
@@ -9,13 +9,21 @@ class DefaultLayout extends React.Component {
   render () {
     return (
       <html lang='en'>
-
         <head>
           <meta charset='UTF-8' />
-          <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+          <meta
+            name='viewport'
+            content='width=device-width, initial-scale=1.0'
+          />
           <title>{this.props.title}</title>
-          <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet' />
-          <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css' />
+          <link
+            href='https://fonts.googleapis.com/icon?family=Material+Icons'
+            rel='stylesheet'
+          />
+          <link
+            rel='stylesheet'
+            href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css'
+          />
           <link rel='stylesheet' href='/styles/styles.css' />
         </head>
 
@@ -32,5 +40,5 @@ class DefaultLayout extends React.Component {
     )
   }
 }
- 
+
 module.exports = DefaultLayout

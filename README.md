@@ -1,4 +1,5 @@
 # Steam ROI
+
 An app to find out a steam game's ROI
 
 ## Scope

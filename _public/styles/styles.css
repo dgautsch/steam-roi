@@ -1,11 +1,11 @@
 :root {
   --color-gray: #282828;
-  --color-white: #FFF;
+  --color-white: #fff;
   --color-black: #000;
 }
 body {
   background: var(--color-gray);
-  color: #FFF;
+  color: #fff;
   padding: 2em;
 }
 
