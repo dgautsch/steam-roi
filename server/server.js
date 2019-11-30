@@ -1,13 +1,25 @@
 const express = require('express')
+const session = require('express-session')
+const fs = require('fs')
 const logger = require('morgan')
 const path = require('path')
-const routes = require('./routes')
-const app = express()
 const passport = require('passport')
-const session = require('express-session')
 const SteamStrategy = require('passport-steam').Strategy
+const { createBundleRenderer } = require('vue-server-renderer')
 
-const middleware = require('./middleware')
+const app = express()
+const routes = require('./routes')
+// const middleware = require('./middleware')
+
+const bundleRenderer = createBundleRenderer(
+  require('../public/vue-ssr-bundle.json'),
+  {
+    template: fs.readFileSync(
+      path.resolve(__dirname, '../app/templates/index.tpl.html'),
+      'utf-8'
+    )
+  }
+)
 
 passport.serializeUser(function (user, done) {
   done(null, user)
@@ -50,14 +62,21 @@ app.use(passport.session())
 
 app.use(logger('dev'))
 
-app.use('/', routes)
+app.use('/api', routes)
 app.use(express.static(path.join(__dirname, '../public')))
-app.get('/', function (req, res) {
-  res.render('index', {
-    user: req.user,
-    title: 'Steam ROI'
-  })
+// app.use(middleware.error)
+// app.use(middleware.notfound)
+
+// Render all other routes with the bundleRenderer.
+app.get('*', (req, res) => {
+  bundleRenderer
+    // Renders directly to the response stream.
+    // The argument is passed as "context" to entry-server.js in the SSR bundle.
+    .renderToStream({
+      title: 'Steam ROI',
+      url: req.path
+    })
+    .pipe(res)
 })
-app.use(middleware.error)
-app.use(middleware.notfound)
+
 module.exports = app

@@ -4,6 +4,9 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build:server && npm run build:client",
+    "build:client": "cross-env NODE_ENV=production webpack --progress --hide-modules --config webpack/webpack.client.js",
+    "build:server": "cross-env NODE_ENV=production webpack --config webpack/webpack.server.js",
     "start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "start:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "dev": "nodemon --watch ./server --exec npm start",
@@ -46,16 +49,26 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
+    "cross-env": "^6.0.3",
+    "css-loader": "3.2.0",
     "eslint-plugin-jest": "^23.1.0",
+    "file-loader": "5.0.2",
     "lint-staged": "^10.0.0-beta.6",
     "modern-node": "^2.6.0",
+    "node-sass": "4.13.0",
     "nodemon": "^1.12.1",
     "prettier-standard": "^16.0.0",
+    "sass-loader": "8.0.0",
     "standard": "^10.0.3",
+    "vue-loader": "^15.7.2",
     "vue-ssr-webpack-plugin": "^3.0.0",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "2.6.10",
     "webpack": "^4.41.2",
-    "webpack-dev-server": "^2.11.5"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^2.11.5",
+    "webpack-merge": "4.2.2",
+    "webpack-node-externals": "1.7.2"
   },
   "standard": {
     "env": "node"

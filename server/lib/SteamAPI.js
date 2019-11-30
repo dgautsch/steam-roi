@@ -32,7 +32,7 @@ class SteamAPI {
    * @returns {Promise<Object>} JSON Response
    */
   async get (path) {
-    return await fetch(
+    return fetch(
       `${this.baseURL}${path}${path.includes('?') ? '&' : '?'}key=${this.key}`,
       this.headers
     )
