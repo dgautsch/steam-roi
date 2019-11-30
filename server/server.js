@@ -1,5 +1,4 @@
 const express = require('express')
-const exphbs = require('express-handlebars')
 const logger = require('morgan')
 const path = require('path')
 const routes = require('./routes')
@@ -18,27 +17,33 @@ passport.deserializeUser(function (obj, done) {
   done(null, obj)
 })
 
-passport.use(new SteamStrategy({
-  returnURL: process.env.RETURN_URL,
-  realm: process.env.REALM,
-  apiKey: process.env.STEAM_API_KEY
-},
-function (identifier, profile, done) {
-  process.nextTick(function () {
-    profile.identifier = identifier
-    return done(null, profile)
-  })
-}
-))
+passport.use(
+  new SteamStrategy(
+    {
+      returnURL: process.env.RETURN_URL,
+      realm: process.env.REALM,
+      apiKey: process.env.STEAM_API_KEY
+    },
+    function (identifier, profile, done) {
+      process.nextTick(function () {
+        profile.identifier = identifier
+        return done(null, profile)
+      })
+    }
+  )
+)
 
-app.use(session({
-  secret: 'Secrets',
-  name: 'Steam Session',
-  cookie: {
-    maxAge: 3600000
-  },
-  resave: true,
-  saveUninitialized: true}))
+app.use(
+  session({
+    secret: 'Secrets',
+    name: 'Steam Session',
+    cookie: {
+      maxAge: 3600000
+    },
+    resave: true,
+    saveUninitialized: true
+  })
+)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -46,9 +51,7 @@ app.use(passport.session())
 app.use(logger('dev'))
 
 app.use('/', routes)
-app.set('views', path.join(__dirname, '../public'))
-app.engine('handlebars', exphbs())
-app.set('view engine', 'handlebars')
+app.use(express.static(path.join(__dirname, '../public')))
 app.get('/', function (req, res) {
   res.render('index', {
     user: req.user,

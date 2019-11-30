@@ -19,35 +19,42 @@ const baseConfig = {
     extensions: ['.webpack.js', '.web.js', '.js', '.json', '.jsx']
   },
   module: {
-    rules: [{
-      test: /\.jsx$/,
-      exclude: /(node_modules|lib)/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['react']
+    rules: [
+      {
+        test: /\.jsx$/,
+        exclude: /(node_modules|lib)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['react']
+          }
         }
-      }
-    }, {
-      test: /\.(png|jpg|gif)$/,
-      use: [{
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
-          limit: 8192
+          limit: 50000,
+          mimetype: 'application/font-woff',
+          name: './fonts/[name].[ext]'
         }
-      }]
-    }, {
-      test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url-loader',
-      options: {
-        limit: 50000,
-        mimetype: 'application/font-woff',
-        name: './fonts/[name].[ext]'
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
-    }, {
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader']
-    }]
+    ]
   }
 }
 
