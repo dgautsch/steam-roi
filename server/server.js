@@ -62,8 +62,8 @@ app.use(passport.session())
 
 app.use(logger('dev'))
 
-app.use('/api', routes)
-app.use(express.static(path.join(__dirname, '../public')))
+app.use('/api/', routes)
+app.use('/public/', express.static(path.join(__dirname, '../public')))
 // app.use(middleware.error)
 // app.use(middleware.notfound)
 
