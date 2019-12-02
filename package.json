@@ -15,7 +15,7 @@
     "format": "modern format",
     "lint": "modern lint",
     "precommit": "modern precommit",
-    "start": "cross-env NODE_ENV=production npm run build && npm server:start",
+    "start": "cross-env npm run build && cross-env NODE_ENV=production npm run server:start",
     "server:dev": "nodemon --watch server --exec npm run server:start",
     "server:start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "server:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
@@ -79,6 +79,12 @@
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "4.2.2",
     "webpack-node-externals": "1.7.2"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "useTabs": false,
+    "tabWidth": 2
   },
   "standard": {
     "env": "node"
