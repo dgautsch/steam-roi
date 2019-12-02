@@ -13,10 +13,13 @@ Eventually, when you login you will be able to see the games you own and how muc
 ## In Progress
 
 - [ ] Lazy load the games. Currently rate limited by steam. Can only do 200 games every 5 minutes.
-
 - [ ] Provide user feedback when search is in progress.
-
 - [ ] Request Caching
+- [ ] Unit testing framework
+- [ ] Sass compilation for global styles
+- [ ] State hydration, VueX
+- [ ] Implement Vue Router
+- [ ] Address `connect.session() MemoryStore is not designed for a production environment, as it will leak`
 
 ## Libraries Used
 
