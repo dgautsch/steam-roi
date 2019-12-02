@@ -4,19 +4,21 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production npm run build:server && npm run build:client",
+    "build": "cross-env NODE_ENV=production npm run clean && npm run build:server && npm run build:client",
     "build:client": "webpack --progress --hide-modules --config webpack/webpack.client.js",
     "build:server": "webpack --config webpack/webpack.server.js",
-    "dev": "run-p dev:client dev:server nodemon",
+    "clean": "rm -rf public/*",
+    "dev": "run-s clean dev:watch",
+    "dev:watch": "run-p dev:client dev:server server:dev",
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config webpack/webpack.client.js",
     "dev:server": "cross-env NODE_ENV=development npm run build:server",
     "format": "modern format",
     "lint": "modern lint",
-    "nodemon": "cross-env NODE_ENV=development nodemon --watch ./server --exec npm server:start",
     "precommit": "modern precommit",
-    "start": "npm run build && npm server:start",
+    "start": "cross-env NODE_ENV=production npm run build && npm server:start",
+    "server:dev": "nodemon --watch server --exec npm run server:start",
     "server:start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
-    "start:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
+    "server:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "test": "modern test"
   },
   "repository": {
@@ -26,7 +28,9 @@
   "keywords": [
     "steam",
     "node",
-    "javascript"
+    "javascript",
+    "vue",
+    "ssr"
   ],
   "author": "Dan Gautsch",
   "license": "MIT",
