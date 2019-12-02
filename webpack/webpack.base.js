@@ -1,8 +1,11 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const webpack = require('webpack')
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 const baseConfig = {
   devtool: '#eval-source-map',
+  mode: isProduction ? 'production' : 'development',
   module: {
     rules: [
       {
@@ -44,29 +47,17 @@ const baseConfig = {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
+          limit: 10000,
           name: '[name].[ext]?[hash]'
         }
       }
     ]
   },
-  devServer: {
-    historyApiFallback: true,
-    hot: true,
-    inline: true,
-    host: 'localhost',
-    port: 8080,
-    proxy: {
-      '^/api/*': {
-        target: 'http://localhost:3000/api/',
-        secure: false
-      }
-    }
-  },
   plugins: [
-    new webpack.HotModuleReplacementPlugin({
-      multiStep: true
-    }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
   ]
 }
 

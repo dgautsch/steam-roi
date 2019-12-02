@@ -1,7 +1,7 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const nodeExternals = require('webpack-node-externals')
-const VueSSRPlugin = require('vue-ssr-webpack-plugin')
+const { VueSSRServerPlugin } = require('vue-ssr-webpack-plugin')
 
 const baseConfig = require('./webpack.base')
 
@@ -21,7 +21,7 @@ const serverConfig = {
     // you should also whitelist deps that modifies `global` (e.g. polyfills)
     whitelist: /\.css$/
   }),
-  plugins: [new VueSSRPlugin()]
+  plugins: [new VueSSRServerPlugin()]
 }
 
 module.exports = () => {
