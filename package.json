@@ -4,10 +4,10 @@
   "description": "An app to find out a steam game's ROI.",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production npm run clean && npm run build:server && npm run build:client",
+    "build": "npm run clean && cross-env NODE_ENV=production npm run build:server && cross-env NODE_ENV=production npm run build:client",
     "build:client": "webpack --progress --hide-modules --config webpack/webpack.client.js",
     "build:server": "webpack --config webpack/webpack.server.js",
-    "clean": "rm -rf public/*",
+    "clean": "rm -rf public/* && rm -rf reports/*",
     "dev": "run-s clean dev:watch",
     "dev:watch": "run-p dev:client dev:server server:dev",
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config webpack/webpack.client.js",

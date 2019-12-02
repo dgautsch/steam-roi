@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const { VueSSRClientPlugin } = require('vue-ssr-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const baseConfig = require('./webpack.base')
 const isProduction = process.env.NODE_ENV === 'production'
@@ -13,12 +14,23 @@ let clientConfig = {
     publicPath: '/public/',
     filename: 'build.js'
   },
-  // optimization: {
-  //   splitChunks: {
-  //     minChunks: Infinity
-  //   }
-  // },
-  plugins: [new VueSSRClientPlugin()]
+  plugins: [
+    new VueSSRClientPlugin(),
+    ...(isProduction === true
+      ? [
+          /* eslint-disable indent */
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            openAnalyzer: false,
+            reportFilename: path.resolve(
+              __dirname,
+              '../reports',
+              'bundle-report-client.html'
+            )
+          })
+        ]
+      : [])
+  ]
 }
 
 if (!isProduction) {
