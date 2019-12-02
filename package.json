@@ -12,9 +12,10 @@
     "dev:server": "cross-env NODE_ENV=development npm run build:server",
     "format": "modern format",
     "lint": "modern lint",
-    "nodemon": "nodemon --watch ./server --exec npm start",
+    "nodemon": "cross-env NODE_ENV=development nodemon --watch ./server --exec npm server:start",
     "precommit": "modern precommit",
-    "start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
+    "start": "npm run build && npm server:start",
+    "server:start": "node -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "start:debug": "node --inspect-brk -r dotenv/config ./server/index.js dotenv_config_path=$(pwd)/config/.env",
     "test": "modern test"
   },
