@@ -1,10 +1,13 @@
+const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const webpack = require('webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 
 const isProduction = process.env.NODE_ENV === 'production'
 
 const baseConfig = {
-  devtool: '#eval-source-map',
+  devtool: isProduction === true ? 'source-map' : 'eval-source-map',
   mode: isProduction ? 'production' : 'development',
   module: {
     rules: [
@@ -57,29 +60,42 @@ const baseConfig = {
     new VueLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    })
+    }),
+    ...(isProduction === true
+      ? [
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            openAnalyzer: false,
+            reportFilename: path.resolve(
+              __dirname,
+              '../reports',
+              'bundle-report.html'
+            )
+          })
+        ]
+      : [])
   ]
 }
 
-// if (process.env.NODE_ENV === 'production') {
-//   baseConfig.devtool = '#source-map'
-//   // http://vue-loader.vuejs.org/en/workflow/production.html
-//   baseConfig.plugins = (baseConfig.plugins || []).concat([
-//     new webpack.DefinePlugin({
-//       'process.env': {
-//         NODE_ENV: '"production"'
-//       }
-//     }),
-//     new webpack.optimize.UglifyJsPlugin({
-//       sourceMap: true,
-//       compress: {
-//         warnings: false
-//       }
-//     }),
-//     new webpack.LoaderOptionsPlugin({
-//       minimize: true
-//     })
-//   ])
-// }
+if (process.env.NODE_ENV === 'production') {
+  baseConfig.devtool = '#source-map'
+  // http://vue-loader.vuejs.org/en/workflow/production.html
+  baseConfig.plugins = (baseConfig.plugins || []).concat([
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
+  ])
+}
 
 module.exports = baseConfig
