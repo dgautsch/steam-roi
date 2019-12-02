@@ -1,23 +1,25 @@
 <template>
   <div id="app">
-    <img :src="logo" />
-    <h1>{{ msg }}</h1>
+    <ul>
+      <li>
+        <router-link to="/">
+          Home
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/account">
+          Account
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/login">
+          Login
+        </router-link>
+      </li>
+    </ul>
+    <router-view />
   </div>
 </template>
-
-<script>
-import logo from './assets/logo.png'
-
-export default {
-  name: 'app',
-  data () {
-    return {
-      logo: logo,
-      msg: 'Welcome to Your Vue.js App'
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 #app {

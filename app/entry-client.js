@@ -1,10 +1,15 @@
 import { createApp } from './app'
 
-const { app } = createApp()
+const { app, router, store } = createApp()
 
-app.$mount('#app')
+router.onReady(() => {
+  if (window.__INITIAL_STATE__) {
+    store.replaceState(window.__INITIAL_STATE__)
+  }
 
-// it activates HMR and executes then webpack-dev-server will be run with hot property
+  app.$mount('#app')
+})
+
 if (module.hot) {
   const api = require('vue-hot-reload-api')
   const Vue = require('vue')

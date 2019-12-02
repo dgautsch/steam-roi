@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const baseConfig = {
   devtool: isProduction === true ? 'source-map' : 'eval-source-map',
-  mode: isProduction ? 'production' : 'development',
+  mode: isProduction === true ? 'production' : 'development',
   module: {
     rules: [
       {
