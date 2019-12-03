@@ -1,13 +1,21 @@
 const app = require('./server.js')
-const debug = require('debug')('myapp:server')
+const debug = require('debug')('steamroi:server')
 const http = require('http')
 const port = normalizePort(process.env.PORT || '3000')
 const server = http.createServer(app)
+const { connectDb } = require('./database')
 
-app.set('port', port)
-server.listen(port)
-server.on('error', onError)
-server.on('listening', onListening)
+connectDb()
+  .then(async () => {
+    app.set('port', port)
+    server.listen(port)
+    server.on('error', onError)
+    server.on('listening', onListening)
+  })
+  .catch(err => {
+    console.error('Could not connect to MongoDB')
+    throw new Error(err.message)
+  })
 
 /**
  * Normalize a port into a number, string, or false.
@@ -57,5 +65,5 @@ function onError (error) {
 function onListening () {
   var addr = server.address()
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
-  debug('Listening on ' + bind)
+  debug('Database connected and server listening on ' + bind)
 }
