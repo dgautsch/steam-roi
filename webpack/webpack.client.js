@@ -12,7 +12,7 @@ let clientConfig = {
   output: {
     path: path.resolve(__dirname, '../public'),
     publicPath: '/public/',
-    filename: 'build.js'
+    filename: '[name].js'
   },
   plugins: [
     new VueSSRClientPlugin(),
@@ -38,6 +38,7 @@ if (!isProduction) {
     devServer: {
       writeToDisk: true,
       contentBase: path.resolve(__dirname, '../public'),
+      overlay: true,
       publicPath: '/public/',
       historyApiFallback: true,
       hot: true,
