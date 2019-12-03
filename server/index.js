@@ -13,7 +13,7 @@ connectDb()
     server.on('listening', onListening)
   })
   .catch(err => {
-    console.error('Could not connect to MongoDB')
+    debug('Could not connect to database')
     throw new Error(err.message)
   })
 

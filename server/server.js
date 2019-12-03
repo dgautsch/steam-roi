@@ -1,5 +1,8 @@
 const express = require('express')
 const session = require('express-session')
+const debug = require('debug')('steamroi:server')
+const MongoStore = require('connect-mongo')(session)
+const { connectDb } = require('./database')
 const fs = require('fs')
 const logger = require('morgan')
 const path = require('path')
@@ -47,18 +50,28 @@ passport.use(
     }
   )
 )
-
-app.use(
-  session({
-    secret: 'Secrets',
-    name: 'Steam Session',
-    cookie: {
-      maxAge: 3600000
-    },
-    resave: true,
-    saveUninitialized: true
+connectDb()
+  .then(async connection => {
+    app.use(
+      session({
+        secret: 'Secrets',
+        name: 'Steam Session',
+        cookie: {
+          maxAge: 3600000
+        },
+        resave: true,
+        saveUninitialized: true,
+        store: new MongoStore({
+          mongooseConnection: connection
+        })
+      })
+    )
+    debug('Established sessions connection')
   })
-)
+  .catch(err => {
+    debug('Could not establish sessions connection')
+    throw new Error(err.message)
+  })
 
 app.use(passport.initialize())
 app.use(passport.session())
