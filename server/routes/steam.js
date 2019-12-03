@@ -1,6 +1,6 @@
 const r = (module.exports = require('express').Router())
 const async = require('async')
-const SteamApi = require('../lib/SteamAPI')
+const SteamApi = require('steamapi')
 const steam = new SteamApi(process.env.STEAM_API_KEY, { cache: true })
 // const auth = require('../middleware/auth')
 
@@ -56,40 +56,44 @@ function getUserOwnedGames (id, req, res) {
             userResults.forEach((item, idx) => {
               results.push(Object.assign({}, item, gameResults[idx]))
             })
-            res.status(200).render('search', {
-              title: 'Search Results',
+            res.status(200).json({
               data: results
             })
           } else {
-            res.status(200).render('search')
+            res.status(200).json({
+              data: []
+            })
           }
         }
       },
       err => {
-        res.status(200).render('search', {
-          error: err
+        res.status(503).json({
+          data: 'Data Unvailable',
+          err: JSON.stringify(err)
         })
         console.error(err)
       }
     )
   } else {
-    res.status(404).json('User not found.')
+    res.status(400).json('Missing ID parameter.')
   }
 }
 
 function getUserSummary (id, req, res) {
   steam.getUserSummary(id).then(
     data => {
-      res.status(200).json(data)
+      res.status(200).json({
+        data
+      })
     },
     err => {
-      res.status(404).json(err)
+      res.status(400).json(err)
       console.error(err)
     }
   )
 }
 
-r.get('/api/v1/user', (req, res) => {
+r.get('/user', (req, res) => {
   let steamId = req.query.id || req.user.id
   if (steamId) getUserSummary(steamId, req, res)
 })
@@ -98,8 +102,6 @@ r.get('/search', (req, res) => {
     console.log(`Searching for ${req.query.id}`)
     getUserOwnedGames(req.query.id, req, res)
   } else {
-    res.render('search', {
-      title: 'Search'
-    })
+    res.get('/')
   }
 })
