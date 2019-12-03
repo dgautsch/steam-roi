@@ -8,17 +8,9 @@ const models = {
 mongoose.set('useCreateIndex', true)
 
 const connectDb = () => {
-  return new Promise((resolve, reject) => {
-    const connection = mongoose.createConnection(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-
-    if (connection) {
-      resolve(connection)
-    } else {
-      reject(Error('Database connection failed'))
-    }
+  return mongoose.createConnection(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
 }
 
