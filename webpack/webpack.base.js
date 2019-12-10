@@ -1,5 +1,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const webpack = require('webpack')
+const path = require('path')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -15,10 +16,6 @@ const baseConfig = {
       {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
       },
       {
         test: /\.vue$/,
@@ -44,11 +41,10 @@ const baseConfig = {
         loader: 'babel-loader'
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
+        test: /\.(png|jpg|gif|svg|woff(2)?|ttf|eot)$/,
+        loader: 'url-loader',
         options: {
-          limit: 10000,
-          name: '[name].[ext]?[hash]'
+          limit: 8192
         }
       }
     ]
@@ -58,7 +54,18 @@ const baseConfig = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '~assets': path.resolve(__dirname, '../app/assets'),
+      '~components': path.resolve(__dirname, '../app/components'),
+      '~plugins': path.resolve(__dirname, '../app/plugins'),
+      '~routes': path.resolve(__dirname, '../app/routes'),
+      '~sass': path.resolve(__dirname, '../app/sass'),
+      '~server': path.resolve(__dirname, '../server')
+    },
+    extensions: ['*', '.js', '.vue', '.json']
+  }
 }
 
 module.exports = baseConfig

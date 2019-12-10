@@ -61,3 +61,6 @@ typings/
 public
 dist
 reports
+
+# dev files
+server/database/sample

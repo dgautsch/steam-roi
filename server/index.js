@@ -1,3 +1,5 @@
+const path = require('path')
+require('dotenv').config({ path: path.join(__dirname, '../config/.env') })
 const app = require('./server.js')
 const debug = require('debug')('steamroi:server')
 const http = require('http')

@@ -1,21 +1,22 @@
 <template>
-  <div>
-    <h1>{{ title }}</h1>
-    <img :src="logo" />
-  </div>
+  <el-container>
+    <PageHeader :title="title" />
+  </el-container>
 </template>
 
 <script>
-import logo from '../assets/logo.png'
+import PageHeader from '~components/PageHeader.vue'
 
 export default {
   metaInfo: {
     title: 'Steam ROI - Home'
   },
+  components: {
+    PageHeader
+  },
   data () {
     return {
-      logo,
-      title: 'Welcome'
+      title: 'Home'
     }
   }
 }

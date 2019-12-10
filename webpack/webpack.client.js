@@ -35,19 +35,18 @@ let clientConfig = {
 
 if (!isProduction) {
   clientConfig = merge(clientConfig, {
+    output: {
+      publicPath: 'http://localhost:8080/public/'
+    },
     devServer: {
       writeToDisk: true,
       contentBase: path.resolve(__dirname, '../public'),
-      overlay: true,
-      publicPath: '/public/',
-      historyApiFallback: true,
+      publicPath: 'http://localhost:8080/public/',
       hot: true,
       inline: true,
-      proxy: {
-        '^/api/*': {
-          target: 'http://localhost:3000/api/',
-          secure: false
-        }
+      historyApiFallback: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
       }
     },
     plugins: [new webpack.HotModuleReplacementPlugin()]
