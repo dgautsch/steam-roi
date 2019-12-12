@@ -9,14 +9,14 @@ import PageHeader from '~components/PageHeader.vue'
 
 export default {
   metaInfo: {
-    title: 'Steam ROI - Login'
+    title: 'Steam ROI - Register'
   },
   components: {
     PageHeader
   },
   data () {
     return {
-      title: 'Login'
+      title: 'Register'
     }
   }
 }

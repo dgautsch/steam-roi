@@ -2,7 +2,7 @@
   <el-header>
     <el-page-header
       @back="goBack"
-      :title="Back"
+      title="Back"
       :content="title"
     ></el-page-header>
   </el-header>

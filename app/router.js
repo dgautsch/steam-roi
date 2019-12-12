@@ -9,7 +9,8 @@ const routes = {
   pages: {
     home: '/',
     account: '/account',
-    login: '/login'
+    login: '/login',
+    register: '/register'
   }
 }
 
@@ -19,15 +20,19 @@ export function createRouter () {
     routes: [
       {
         path: routes.pages.home,
-        component: () => import('./routes/Home.vue')
+        component: () => import('~routes/Home.vue')
       },
       {
         path: routes.pages.account,
-        component: () => import('./routes/Account.vue')
+        component: () => import('~routes/Account.vue')
       },
       {
         path: routes.pages.login,
-        component: () => import('./routes/Login.vue')
+        component: () => import('~routes/Login.vue')
+      },
+      {
+        path: routes.pages.register,
+        component: () => import('~routes/Register.vue')
       }
     ]
   })
