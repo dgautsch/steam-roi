@@ -1,26 +1,35 @@
 <template>
-  <el-menu
-    :default-active="activeIndex"
-    class="el-menu"
-    background-color="#282828"
-    text-color="#FFFFFF"
-  >
-    <el-menu-item index="1">
-      <router-link to="/">
-        Home
-      </router-link>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/login">
-        Login
-      </router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/register">
-        Register
-      </router-link>
-    </el-menu-item>
-  </el-menu>
+  <div class="sroi-site-navigation">
+    <el-button
+      type="success"
+      icon="el-icon-menu"
+      circle
+      @click="handleClick"
+    ></el-button>
+    <el-drawer :visible.sync="drawerOpen" :with-header="false" direction="ltr">
+      <el-menu
+        :default-active="activeIndex"
+        class="sroi-menu"
+        @select="handleSelect"
+      >
+        <el-menu-item index="1">
+          <router-link to="/" v-slot="{ href, navigate, route }">
+            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+          </router-link>
+        </el-menu-item>
+        <el-menu-item index="2">
+          <router-link to="/login" v-slot="{ href, navigate, route }">
+            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+          </router-link>
+        </el-menu-item>
+        <el-menu-item index="3">
+          <router-link to="/register" v-slot="{ href, navigate, route }">
+            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+          </router-link>
+        </el-menu-item>
+      </el-menu>
+    </el-drawer>
+  </div>
 </template>
 
 <script>
@@ -34,7 +43,16 @@ export default {
   },
   data () {
     return {
-      activeIndex: '1'
+      activeIndex: '1',
+      drawerOpen: false
+    }
+  },
+  methods: {
+    handleClick () {
+      this.drawerOpen = !this.drawerOpen
+    },
+    handleSelect () {
+      this.drawerOpen = false
     }
   }
 }
@@ -42,16 +60,15 @@ export default {
 
 <style lang="scss">
 @import '~sass/_variables';
-.el-menu {
+.sroi-site-navigation {
+  text-align: left;
+}
+.sroi-menu {
   a:visited,
   a {
     display: inline-block;
-    color: $color-white;
     height: 100%;
     width: 100%;
-  }
-  a:hover {
-    color: $color-highlight;
   }
 }
 </style>

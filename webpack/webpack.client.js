@@ -44,6 +44,7 @@ if (!isProduction) {
       publicPath: 'http://localhost:8080/public/',
       hot: true,
       inline: true,
+      overlay: true,
       historyApiFallback: true,
       headers: {
         'Access-Control-Allow-Origin': '*'

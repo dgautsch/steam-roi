@@ -1,11 +1,11 @@
 <template>
-  <el-header>
+  <div>
     <el-page-header
       @back="goBack"
       title="Back"
       :content="title"
     ></el-page-header>
-  </el-header>
+  </div>
 </template>
 
 <script>

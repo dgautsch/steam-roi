@@ -19,18 +19,22 @@ export function createRouter () {
     mode: 'history',
     routes: [
       {
+        name: 'Home',
         path: routes.pages.home,
         component: () => import('~routes/Home.vue')
       },
       {
+        name: 'Account',
         path: routes.pages.account,
         component: () => import('~routes/Account.vue')
       },
       {
+        name: 'Login',
         path: routes.pages.login,
         component: () => import('~routes/Login.vue')
       },
       {
+        name: 'Register',
         path: routes.pages.register,
         component: () => import('~routes/Register.vue')
       }
