@@ -6,28 +6,33 @@
       circle
       @click="handleClick"
     ></el-button>
-    <el-drawer :visible.sync="drawerOpen" :with-header="false" direction="ltr">
-      <el-menu
-        :default-active="activeIndex"
-        class="sroi-menu"
-        @select="handleSelect"
-      >
-        <el-menu-item index="1">
-          <router-link to="/" v-slot="{ href, navigate, route }">
-            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-          </router-link>
-        </el-menu-item>
-        <el-menu-item index="2">
-          <router-link to="/login" v-slot="{ href, navigate, route }">
-            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-          </router-link>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <router-link to="/register" v-slot="{ href, navigate, route }">
-            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-          </router-link>
-        </el-menu-item>
-      </el-menu>
+    <el-drawer :visible.sync="drawerOpen" direction="ltr">
+      <template v-slot:title>
+        <h3>Navigation</h3>
+      </template>
+      <template v-slot:default>
+        <el-menu
+          :default-active="activeIndex"
+          class="sroi-menu"
+          @select="handleSelect"
+        >
+          <el-menu-item index="1">
+            <router-link to="/" v-slot="{ href, navigate, route }">
+              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+            </router-link>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <router-link to="/login" v-slot="{ href, navigate, route }">
+              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+            </router-link>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <router-link to="/register" v-slot="{ href, navigate, route }">
+              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
+            </router-link>
+          </el-menu-item>
+        </el-menu>
+      </template>
     </el-drawer>
   </div>
 </template>
@@ -43,7 +48,7 @@ export default {
   },
   data () {
     return {
-      activeIndex: '1',
+      activeIndex: this.$router.activeIndex,
       drawerOpen: false
     }
   },
@@ -69,6 +74,9 @@ export default {
     display: inline-block;
     height: 100%;
     width: 100%;
+  }
+  a:focus {
+    outline: 1px solid red;
   }
 }
 </style>
