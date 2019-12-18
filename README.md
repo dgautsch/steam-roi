@@ -20,7 +20,3 @@ Eventually, when you login you will be able to see the games you own and how muc
 - [ ] State hydration, VueX
 - [ ] Implement Vue Router
 - [ ] Address `connect.session() MemoryStore is not designed for a production environment, as it will leak`
-
-## Libraries Used
-
-https://www.npmjs.com/package/steam-api (Had to slightly modify this)
