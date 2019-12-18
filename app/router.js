@@ -21,22 +21,38 @@ export function createRouter () {
       {
         name: 'Home',
         path: routes.pages.home,
-        component: () => import('~routes/Home.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "home" */
+            '~routes/Home.vue'
+          )
       },
       {
         name: 'Account',
         path: routes.pages.account,
-        component: () => import('~routes/Account.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "account" */
+            '~routes/Account.vue'
+          )
       },
       {
         name: 'Login',
         path: routes.pages.login,
-        component: () => import('~routes/Login.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "login" */
+            '~routes/Login.vue'
+          )
       },
       {
         name: 'Register',
         path: routes.pages.register,
-        component: () => import('~routes/Register.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "register" */
+            '~routes/Register.vue'
+          )
       }
     ]
   })

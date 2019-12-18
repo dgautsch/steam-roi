@@ -17,19 +17,13 @@
           @select="handleSelect"
         >
           <el-menu-item index="1">
-            <router-link to="/" v-slot="{ href, navigate, route }">
-              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-            </router-link>
+            <NavLink to="/" />
           </el-menu-item>
           <el-menu-item index="2">
-            <router-link to="/login" v-slot="{ href, navigate, route }">
-              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-            </router-link>
+            <NavLink to="/Login" />
           </el-menu-item>
           <el-menu-item index="3">
-            <router-link to="/register" v-slot="{ href, navigate, route }">
-              <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-            </router-link>
+            <NavLink to="/Register" />
           </el-menu-item>
         </el-menu>
       </template>
@@ -38,8 +32,13 @@
 </template>
 
 <script>
+import NavLink from '~components/NavLink'
+
 export default {
   name: 'SiteNavigation',
+  components: {
+    NavLink
+  },
   props: {
     displayType: {
       type: String,

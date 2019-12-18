@@ -28,9 +28,6 @@
           <el-button @click="resetForm()">Reset</el-button>
         </el-form-item>
       </el-form>
-      <pre>
-        {{ loginForm }}
-      </pre>
     </el-container>
   </el-container>
 </template>

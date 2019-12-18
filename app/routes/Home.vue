@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    <PageHeader :title="title" />
+    <div class="el-page-header__title">
+      <h1>{{ title }}</h1>
+    </div>
   </el-container>
 </template>
 

@@ -6,16 +6,14 @@
           <SiteNavigation />
         </el-col>
         <el-col :span="8">
-          <h1>Steam ROI</h1>
+          <h1 class="sroi-site-title">
+            <router-link to="/">Site</router-link>
+          </h1>
         </el-col>
         <el-col :span="8" class="sroi-logout">
-          <router-link to="/login" v-slot="{ href, navigate, route }">
-            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-          </router-link>
+          <NavLink to="/login" />
           /
-          <router-link to="/register" v-slot="{ href, navigate, route }">
-            <el-link :href="href" @click="navigate">{{ route.name }}</el-link>
-          </router-link>
+          <NavLink to="/register" />
         </el-col>
       </el-row>
     </el-header>
@@ -29,11 +27,15 @@
 </template>
 
 <script>
+import NavLink from '~components/NavLink'
+import PageLink from '~components/PageLink'
 import SiteNavigation from '~components/SiteNavigation'
 
 export default {
   name: 'AppRoot',
   components: {
+    NavLink,
+    PageLink,
     SiteNavigation
   },
   computed: {
@@ -61,5 +63,13 @@ export default {
   padding-top: 1em;
   text-align: center;
   border-top: 1px solid $--border-color-base;
+}
+.sroi-site-title {
+  a,
+  a:hover,
+  a:visited {
+    color: $--color-primary;
+    text-decoration: none;
+  }
 }
 </style>
