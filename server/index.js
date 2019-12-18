@@ -1,19 +1,27 @@
-require('./config.js')
-const app = require('./app.js')
-const debug = require('debug')('myapp:server')
+const path = require('path')
+require('dotenv').config({ path: path.join(__dirname, '../config/.env') })
+const app = require('./server.js')
+const debug = require('debug')('steamroi:server')
 const http = require('http')
 const port = normalizePort(process.env.PORT || '3000')
 const server = http.createServer(app)
+const { connectDb } = require('./database')
 
-app.set('port', port)
-server.listen(port)
-server.on('error', onError)
-server.on('listening', onListening)
+connectDb()
+  .then(async () => {
+    app.set('port', port)
+    server.listen(port)
+    server.on('error', onError)
+    server.on('listening', onListening)
+  })
+  .catch(err => {
+    debug('Could not connect to database')
+    throw new Error(err.message)
+  })
 
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort (val) {
   var port = parseInt(val, 10)
 
@@ -33,15 +41,12 @@ function normalizePort (val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError (error) {
   if (error.syscall !== 'listen') {
     throw error
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -59,11 +64,8 @@ function onError (error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening () {
   var addr = server.address()
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port
-  debug('Listening on ' + bind)
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+  debug('Database connected and server listening on ' + bind)
 }
