@@ -1,18 +1,12 @@
 const express = require('express')
-const session = require('express-session')
-const debug = require('debug')('steamroi:server')
-const MongoStore = require('connect-mongo')(session)
-const { connectDb } = require('./database')
 const fs = require('fs')
 const logger = require('morgan')
 const path = require('path')
-const passport = require('passport')
-const SteamStrategy = require('passport-steam').Strategy
 const { createBundleRenderer } = require('vue-server-renderer')
 
 const app = express()
 const routes = require('./routes')
-// const middleware = require('./middleware')
+const { passport } = require('./middleware')
 const serverBundle = require('../public/vue-ssr-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
 const template = fs.readFileSync(
@@ -27,61 +21,13 @@ const bundleRenderer = createBundleRenderer(serverBundle, {
   clientManifest
 })
 
-passport.serializeUser(function (user, done) {
-  done(null, user)
-})
+// Middleware
+passport(app)
 
-passport.deserializeUser(function (obj, done) {
-  done(null, obj)
-})
-
-passport.use(
-  new SteamStrategy(
-    {
-      returnURL: process.env.RETURN_URL,
-      realm: process.env.REALM,
-      apiKey: process.env.STEAM_API_KEY
-    },
-    function (identifier, profile, done) {
-      process.nextTick(function () {
-        profile.identifier = identifier
-        return done(null, profile)
-      })
-    }
-  )
-)
-connectDb()
-  .then(async connection => {
-    app.use(
-      session({
-        secret: 'Secrets',
-        name: 'Steam Session',
-        cookie: {
-          maxAge: 3600000
-        },
-        resave: true,
-        saveUninitialized: true,
-        store: new MongoStore({
-          mongooseConnection: connection
-        })
-      })
-    )
-    debug('Established sessions connection')
-  })
-  .catch(err => {
-    debug('Could not establish sessions connection')
-    throw new Error(err.message)
-  })
-
-app.use(passport.initialize())
-app.use(passport.session())
-
+// Route Handling
 app.use(logger('dev'))
-
 app.use('/api/', routes)
 app.use('/public/', express.static(path.join(__dirname, '../public')))
-// app.use(middleware.error)
-// app.use(middleware.notfound)
 
 // Render all other routes with the bundleRenderer.
 app.get('*', (req, res) => {
