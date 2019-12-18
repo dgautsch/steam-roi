@@ -27,6 +27,7 @@ const serverConfig = {
     new VueSSRServerPlugin(),
     ...(!isProduction
       ? [
+          /* eslint-disable indent */
           new NodemonPlugin({
             watch: [
               path.resolve(__dirname, '../server/**/*'),

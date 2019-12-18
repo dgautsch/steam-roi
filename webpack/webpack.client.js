@@ -8,11 +8,19 @@ const baseConfig = require('./webpack.base')
 const isProduction = process.env.NODE_ENV === 'production'
 
 let clientConfig = {
-  entry: './app/entry-client.js',
+  entry: ['./app/entry-client.js'],
   output: {
-    path: path.resolve(__dirname, '../public'),
-    publicPath: '/public/',
-    filename: '[name].js'
+    filename: '[name].[hash:8].js',
+    chunkFilename: '[name].[hash:8].bundle.js',
+    path: path.resolve(__dirname, '../public/'),
+    publicPath: '/public/'
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        default: false
+      }
+    }
   },
   plugins: [
     new VueSSRClientPlugin(),
@@ -36,6 +44,8 @@ let clientConfig = {
 if (!isProduction) {
   clientConfig = merge(clientConfig, {
     output: {
+      filename: '[name].js',
+      chunkFilename: '[name].bundle.js',
       publicPath: 'http://localhost:8080/public/'
     },
     devServer: {
