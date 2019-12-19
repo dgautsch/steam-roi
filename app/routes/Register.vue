@@ -5,20 +5,23 @@
         <PageHeader :title="title" />
       </el-container>
     </el-header>
-    <el-container>
+    <el-main>
       <el-form label-position="left" label-width="100px">
         <el-form-item label="Username">
           <el-input
-            v-model="loginForm.userName"
+            v-model="registerForm.userName"
             placeholder="Username"
           ></el-input>
         </el-form-item>
         <el-form-item label="E-mail">
-          <el-input v-model="loginForm.email" placeholder="E-mail"></el-input>
+          <el-input
+            v-model="registerForm.email"
+            placeholder="E-mail"
+          ></el-input>
         </el-form-item>
         <el-form-item label="Password">
           <el-input
-            v-model="loginForm.password"
+            v-model="registerForm.password"
             show-password
             placeholder="Password"
           ></el-input>
@@ -28,7 +31,7 @@
           <el-button @click="resetForm()">Reset</el-button>
         </el-form-item>
       </el-form>
-    </el-container>
+    </el-main>
   </el-container>
 </template>
 
@@ -45,7 +48,7 @@ export default {
   data () {
     return {
       title: 'Register',
-      loginForm: {
+      registerForm: {
         userName: '',
         email: '',
         password: ''
