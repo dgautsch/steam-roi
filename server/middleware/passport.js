@@ -1,5 +1,5 @@
 const { connectDb } = require('../database')
-const debug = require('debug')('steamroi:server')
+const dblogger = require('debug')('steamroi:db')
 const passport = require('passport')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
@@ -21,7 +21,7 @@ module.exports = function (app) {
         realm: process.env.REALM,
         apiKey: process.env.STEAM_API_KEY
       },
-      function (identifier, profile, done) {
+      (identifier, profile, done) => {
         process.nextTick(function () {
           profile.identifier = identifier
           return done(null, profile)
@@ -33,7 +33,7 @@ module.exports = function (app) {
     .then(async connection => {
       app.use(
         session({
-          secret: 'Secrets',
+          secret: process.env.SESSIONS_SECRET,
           name: 'Steam Session',
           cookie: {
             maxAge: 3600000
@@ -45,10 +45,10 @@ module.exports = function (app) {
           })
         })
       )
-      debug('Established sessions connection')
+      dblogger('Established sessions DB connection')
     })
     .catch(err => {
-      debug('Could not establish sessions connection')
+      dblogger('Could not establish sessions connection')
       throw new Error(err.message)
     })
 

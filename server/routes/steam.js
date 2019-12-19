@@ -8,10 +8,10 @@ function getUserOwnedGames (id, req, res) {
   if (id) {
     steam.getUserOwnedGames(id).then(
       data => {
-        let gameResults = []
-        let userOwnedGames = data
-        let results = []
-        let gameIds = userOwnedGames
+        const gameResults = []
+        const userOwnedGames = data
+        const results = []
+        const gameIds = userOwnedGames
           .filter((game, idx) => {
             if (idx <= 100 && game.playTime !== 0) {
               return game
@@ -24,14 +24,14 @@ function getUserOwnedGames (id, req, res) {
         async function getGameDetails (id) {
           console.log(`processing ${id}`)
           try {
-            let gameData = await steam.getGameDetails(id)
+            const gameData = await steam.getGameDetails(id)
             if (gameData) gameResults.push(gameData)
           } catch (err) {
             console.error(err)
           }
         }
 
-        let q = async.queue(getGameDetails, 3)
+        const q = async.queue(getGameDetails, 3)
 
         q.push(gameIds, error => {
           if (error) {
@@ -41,7 +41,7 @@ function getUserOwnedGames (id, req, res) {
 
         q.drain = function () {
           if (req.query.id) {
-            let userResults = userOwnedGames
+            const userResults = userOwnedGames
               .filter(userGame => {
                 return gameResults.some(gameInfo => {
                   return userGame.appID === gameInfo.steam_appid
@@ -94,7 +94,7 @@ function getUserSummary (id, req, res) {
 }
 
 r.get('/user', (req, res) => {
-  let steamId = req.query.id || req.user.id
+  const steamId = req.query.id || req.user.id
   if (steamId) getUserSummary(steamId, req, res)
 })
 r.get('/search', (req, res) => {
