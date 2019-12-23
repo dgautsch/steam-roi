@@ -65,7 +65,6 @@
     "passport": "0.4.0",
     "passport-steam": "1.0.12",
     "sass-loader": "8.0.0",
-    "standard": "14.1.0",
     "steamapi": "2.0.7",
     "url-loader": "3.0.0",
     "vue": "2.6.11",
@@ -89,6 +88,7 @@
     "modern-node": "2.6.0",
     "nodemon": "2.0.1",
     "nodemon-webpack-plugin": "4.2.1",
+    "standard": "14.1.0",
     "vue-hot-reload-api": "2.3.4",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0"
