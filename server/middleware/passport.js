@@ -4,6 +4,7 @@ const passport = require('passport')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const SteamStrategy = require('passport-steam').Strategy
+const LocalStrategy = require('passport-local').Strategy
 
 module.exports = function (app) {
   passport.serializeUser(function (user, done) {
@@ -14,6 +15,7 @@ module.exports = function (app) {
     done(null, obj)
   })
 
+  // Steam Strategy
   passport.use(
     new SteamStrategy(
       {
@@ -29,12 +31,31 @@ module.exports = function (app) {
       }
     )
   )
+
+  // Local Strategy
+  passport.use(
+    new LocalStrategy(function (username, password, done) {
+      User.findOne({ username: username }, function (err, user) {
+        if (err) {
+          return done(err)
+        }
+        if (!user) {
+          return done(null, false)
+        }
+        if (!user.verifyPassword(password)) {
+          return done(null, false)
+        }
+        return done(null, user)
+      })
+    })
+  )
+
   connectDb()
     .then(async connection => {
       app.use(
         session({
           secret: process.env.SESSIONS_SECRET,
-          name: 'Steam Session',
+          name: 'Steam ROI Credentials Session',
           cookie: {
             maxAge: 3600000
           },

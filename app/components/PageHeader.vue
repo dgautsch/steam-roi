@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-page-header
-      @back="goBack"
-      title="Back"
-      :content="title"
-    ></el-page-header>
+    <el-page-header @back="goBack" title="Back">
+      <template v-slot:content>
+        <h2>{{ title }}</h2>
+      </template>
+    </el-page-header>
   </div>
 </template>
 
@@ -24,3 +24,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.el-page-header__content {
+  h2 {
+    font-size: 18px;
+    margin: 0;
+  }
+}
+</style>

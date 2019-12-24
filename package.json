@@ -47,6 +47,7 @@
     "async": "2.6.0",
     "babel-loader": "8.0.6",
     "babel-plugin-component": "1.1.1",
+    "bcrypt": "3.0.7",
     "body-parser": "1.18.2",
     "connect-mongo": "3.2.0",
     "cookie-parser": "1.4.3",
@@ -63,6 +64,7 @@
     "node-sass": "4.13.0",
     "npm-run-all": "4.1.5",
     "passport": "0.4.0",
+    "passport-local": "1.0.0",
     "passport-steam": "1.0.12",
     "sass-loader": "8.0.0",
     "steamapi": "2.0.7",
@@ -83,13 +85,16 @@
     "webpack-node-externals": "1.7.2"
   },
   "devDependencies": {
+    "@types/jest": "24.0.24",
     "babel-eslint": "10.0.3",
+    "babel-jest": "24.9.0",
     "eslint-plugin-jest": "23.1.0",
     "modern-node": "2.6.0",
-    "nodemon": "2.0.1",
+    "mongodb-memory-server": "6.1.1",
     "nodemon-webpack-plugin": "4.2.1",
     "standard": "14.1.0",
     "vue-hot-reload-api": "2.3.4",
+    "vue-jest": "3.0.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0"
   },
@@ -101,7 +106,10 @@
     "endOfLine": "lf"
   },
   "standard": {
-    "env": "node",
+    "env": {
+      "node": true,
+      "jest/globals": true
+    },
     "parser": "babel-eslint"
   }
 }
