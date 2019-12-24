@@ -1,45 +1,35 @@
-/* eslint-disable no-return-await */
 /**
  * @jest-environment node
  */
 
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 
-const dbHandler = require('../db-handler')
-const User = require('@server/database/schemas/User')
+const { setupMockDb } = require('../db-handler')
+const User = require('../../../server/database/schemas/User')
 
-// create a user a new user
-const testUser = new User({
+const MOCK_USER = {
   username: 'johndoe',
   password: 'testpassword'
-})
+}
+
+// create a user a new user
+const testUser = new User(MOCK_USER)
 
 /**
  * create a test user
  */
-beforeEach(async () => await testUser.save())
+beforeEach(async () => testUser.save())
 
 /**
- * Connect to a new in-memory database before running any tests.
+ * setup mock db setup and teardown
  */
-beforeAll(async () => await dbHandler.connect())
-
-/**
- * Clear all test data after every test.
- */
-afterEach(async () => await dbHandler.clearDatabase())
-
-/**
- * Remove and close the db and server.
- */
-afterAll(async () => await dbHandler.closeDatabase())
+setupMockDb()
 
 describe('User', () => {
   it('creates a user in the collection', async () => {
-    expect(async () => {
-      await User.findOne({
-        username: 'johndoe'
-      })
-    }).toBe('foo')
+    const user = await User.findOne({
+      username: 'johndoe'
+    })
+    expect(user.username).toBe(MOCK_USER.username)
   })
 })
