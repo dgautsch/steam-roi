@@ -42,7 +42,11 @@ dbUtils.clearDatabase = async () => {
   }
 }
 
-module.exports.dbUtils = dbUtils
+module.exports = {
+  connect: dbUtils.connect,
+  closeDatabase: dbUtils.closeDatabase,
+  clearDatabase: dbUtils.clearDatabase
+}
 
 module.exports.setupMockDb = () => {
   /**

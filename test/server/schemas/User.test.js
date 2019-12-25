@@ -1,11 +1,11 @@
 /**
  * @jest-environment node
  */
-
+/* eslint-disable handle-callback-err */
 // const mongoose = require('mongoose')
 
-const { setupMockDb } = require('../db-handler')
-const User = require('../../../server/database/schemas/User')
+const { clearDatabase, closeDatabase, connect } = require('../db-utils')
+const UserModel = require('../../../server/database/schemas/User')
 
 const MOCK_USER = {
   username: 'johndoe',
@@ -13,23 +13,60 @@ const MOCK_USER = {
 }
 
 // create a user a new user
-const testUser = new User(MOCK_USER)
+let testUser
 
 /**
- * create a test user
+ * Connect to a new in-memory database before running any tests.
  */
-beforeEach(async () => testUser.save())
+beforeAll(async () => {
+  await connect()
+})
 
 /**
- * setup mock db setup and teardown
+ * Seed the database.
  */
-setupMockDb()
+beforeEach(async () => {
+  testUser = new UserModel(MOCK_USER)
+  await testUser.save()
+})
+
+/**
+ * Clear all test data after every test.
+ */
+afterEach(async () => {
+  await clearDatabase()
+})
+
+/**
+ * Remove and close the db and server.
+ */
+afterAll(async () => {
+  await closeDatabase()
+})
 
 describe('User', () => {
   it('creates a user in the collection', async () => {
-    const user = await User.findOne({
-      username: 'johndoe'
+    expect(testUser.username).toBe(MOCK_USER.username)
+  })
+
+  it('updates a user password', async () => {
+    testUser.password = 'foobar'
+    await testUser.save()
+    const isMatch = await testUser.comparePassword('foobar')
+    expect(isMatch).toBeTruthy()
+  })
+
+  describe('comparePassword', () => {
+    it('should match passwords', async () => {
+      testUser.comparePassword('testpassword', (err, isMatch) => {
+        expect(isMatch).toBeTruthy()
+      })
     })
-    expect(user.username).toBe(MOCK_USER.username)
+
+    it('should reject unmatched passwords', async () => {
+      testUser.comparePassword('testpassword2', (err, isMatch) => {
+        expect(isMatch).toBeFalsy()
+      })
+    })
   })
 })
