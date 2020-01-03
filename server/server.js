@@ -10,7 +10,7 @@ const { isProduction, disableDatabase } = require('../config')
 const routes = require('./routes')
 const { passport } = require('./middleware')
 const { connectDb } = require('./database')
-const serverBundle = require('../public/vue-ssr-bundle.json')
+const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
 const template = fs.readFileSync(
   path.resolve(__dirname, '../app/templates/index.tpl.html'),

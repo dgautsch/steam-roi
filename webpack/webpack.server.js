@@ -1,8 +1,9 @@
+/* eslint-disable indent */
 const path = require('path')
 const merge = require('webpack-merge')
 const nodeExternals = require('webpack-node-externals')
 const NodemonPlugin = require('nodemon-webpack-plugin')
-const { VueSSRServerPlugin } = require('vue-ssr-webpack-plugin')
+const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 const baseConfig = require('./webpack.base')
 const isProduction = process.env.NODE_ENV === 'production'
@@ -27,7 +28,6 @@ const serverConfig = {
     new VueSSRServerPlugin(),
     ...(!isProduction
       ? [
-          /* eslint-disable indent */
           new NodemonPlugin({
             watch: [
               path.resolve(__dirname, '../server/**/*'),
