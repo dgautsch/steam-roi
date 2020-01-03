@@ -1,10 +1,12 @@
-const { connectDb } = require('../database')
 const dblogger = require('debug')('steamroi:db')
 const passport = require('passport')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
+
+const { connectDb } = require('../database')
+const User = require('~server/database/schemas/User')
 
 module.exports = function (app) {
   passport.serializeUser(function (user, done) {
