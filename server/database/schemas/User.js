@@ -5,33 +5,38 @@ const SALT_WORK_FACTOR = 10
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true,
-    index: { unique: true }
+    index: true,
+    unique: true
+  },
+  email: {
+    type: String,
+    unique: true
   },
   password: {
     type: String
   }
 })
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function () {
   const user = this
+  return new Promise((resolve, reject) => {
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) {
+      reject(new Error('Password unchanged, cancelling save operation.'))
+    }
 
-  // only hash the password if it has been modified (or is new)
-  if (!user.isModified('password')) {
-    return next()
-  }
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+      if (err) reject(err)
 
-  // generate a salt
-  bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-    if (err) return next(err)
+      // hash the password using our new salt
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        if (err) reject(err)
 
-    // hash the password using our new salt
-    bcrypt.hash(user.password, salt, (err, hash) => {
-      if (err) return next(err)
-
-      // override the cleartext password with the hashed one
-      user.password = hash
-      next()
+        // override the cleartext password with the hashed one
+        user.password = hash
+        resolve()
+      })
     })
   })
 })

@@ -3,9 +3,10 @@
  */
 /* eslint-disable handle-callback-err */
 // const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
-const { clearDatabase, closeDatabase, connect } = require('../db-utils')
-const UserModel = require('../../../server/database/schemas/User')
+const { closeDatabase, connect } = require('../db-utils')
+const User = require('../../../server/database/schemas/User')
 
 const MOCK_USER = {
   username: 'johndoe',
@@ -15,6 +16,7 @@ const MOCK_USER = {
 // create a user a new user
 let testUser
 
+// @todo move tese to db-utils https://zellwk.com/blog/jest-and-mongoose/
 /**
  * Connect to a new in-memory database before running any tests.
  */
@@ -26,7 +28,7 @@ beforeAll(async () => {
  * Seed the database.
  */
 beforeEach(async () => {
-  testUser = new UserModel(MOCK_USER)
+  testUser = new User(MOCK_USER)
   await testUser.save()
 })
 
@@ -34,7 +36,7 @@ beforeEach(async () => {
  * Clear all test data after every test.
  */
 afterEach(async () => {
-  await clearDatabase()
+  await User.deleteMany()
 })
 
 /**
@@ -56,6 +58,31 @@ describe('User', () => {
     expect(isMatch).toBeTruthy()
   })
 
+  it('does not update a password if not changed', async () => {
+    testUser.password = MOCK_USER.password
+    await testUser.save()
+    const isMatch = testUser.comparePassword(MOCK_USER.password)
+    expect(isMatch).toBeTruthy()
+  })
+
+  it('should return an error on salt generation error', async () => {
+    jest.spyOn(bcrypt, 'genSalt').mockImplementation((salt, cb) => {
+      cb(new Error('error'), null)
+    })
+    testUser.password = 'foobar'
+    await expect(testUser.save()).rejects.toEqual(new Error('error'))
+    bcrypt.genSalt.mockRestore()
+  })
+
+  it('should return an error hash generation error', async () => {
+    jest.spyOn(bcrypt, 'hash').mockImplementation((pw, pw2, cb) => {
+      cb(new Error('error'))
+    })
+    testUser.password = 'foobar'
+    await expect(testUser.save()).rejects.toEqual(new Error('error'))
+    bcrypt.hash.mockRestore()
+  })
+
   describe('comparePassword', () => {
     it('should match passwords', async () => {
       testUser.comparePassword('testpassword', (err, isMatch) => {
@@ -67,6 +94,16 @@ describe('User', () => {
       testUser.comparePassword('testpassword2', (err, isMatch) => {
         expect(isMatch).toBeFalsy()
       })
+    })
+
+    it('should return an error on validation fail', async () => {
+      jest.spyOn(bcrypt, 'compare').mockImplementation((pw, pw2, cb) => {
+        cb(new Error('error'))
+      })
+      await expect(testUser.comparePassword('testpassword2')).rejects.toEqual(
+        new Error('error')
+      )
+      bcrypt.compare.mockRestore()
     })
   })
 })
