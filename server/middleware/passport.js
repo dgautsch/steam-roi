@@ -6,15 +6,17 @@ const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
 
 const { connectDb } = require('../database')
-const User = require('~server/database/schemas/User')
+const User = require('../database/schemas/User')
 
 module.exports = function (app) {
   passport.serializeUser(function (user, done) {
     done(null, user)
   })
 
-  passport.deserializeUser(function (obj, done) {
-    done(null, obj)
+  passport.deserializeUser(function (user, done) {
+    User.findById(user.id, function (err, user) {
+      done(err, user)
+    })
   })
 
   // Steam Strategy
@@ -36,20 +38,38 @@ module.exports = function (app) {
 
   // Local Strategy
   passport.use(
-    new LocalStrategy(function (username, password, done) {
-      User.findOne({ username: username }, function (err, user) {
-        if (err) {
-          return done(err)
-        }
-        if (!user) {
-          return done(null, false)
-        }
-        if (!user.verifyPassword(password)) {
-          return done(null, false)
-        }
-        return done(null, user)
-      })
-    })
+    new LocalStrategy(
+      {
+        passReqToCallback: true,
+        usernameField: 'email',
+        passwordField: 'password'
+      },
+      function (req, email, password, done) {
+        let newUser
+
+        User.findOne({ username: email }, async function (err, user) {
+          if (err) {
+            return done(err, false)
+          }
+          if (user) {
+            // user email exists
+            return done(null, false)
+          } else {
+            // create a new user
+            newUser = new User({
+              username: email,
+              password
+            })
+            try {
+              await newUser.save()
+              return done(null, newUser)
+            } catch (error) {
+              return done(error, false)
+            }
+          }
+        })
+      }
+    )
   )
 
   connectDb()
@@ -57,7 +77,7 @@ module.exports = function (app) {
       app.use(
         session({
           secret: process.env.SESSIONS_SECRET,
-          name: 'Steam ROI Credentials Session',
+          name: 'session-auth',
           cookie: {
             maxAge: 3600000
           },

@@ -1,10 +1,5 @@
 const mongoose = require('mongoose')
 
-const User = require('./schemas/User')
-const models = {
-  User
-}
-
 mongoose.set('useCreateIndex', true)
 
 const connectDb = () => {
@@ -15,4 +10,3 @@ const connectDb = () => {
 }
 
 exports.connectDb = connectDb
-exports.models = models
