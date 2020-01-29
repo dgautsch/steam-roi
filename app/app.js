@@ -1,3 +1,4 @@
+import axios from 'axios'
 import Vue from 'vue'
 import { sync } from 'vuex-router-sync'
 
@@ -12,6 +13,7 @@ export function createApp () {
   const store = createStore()
 
   sync(store, router)
+  Vue.prototype.$http = axios
   const app = new Vue({
     router,
     store,
