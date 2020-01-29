@@ -6,12 +6,7 @@
       </el-container>
     </el-header>
     <el-main>
-      <el-form
-        label-position="left"
-        label-width="100px"
-        action="/api/register"
-        method="post"
-      >
+      <el-form label-position="left" label-width="100px">
         <el-form-item label="E-mail">
           <el-input
             id="email"
@@ -32,8 +27,8 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button native-type="submit" type="success">Create</el-button>
-          <el-button @click="resetForm()">Reset</el-button>
+          <el-button @click="submitForm" type="success">Create</el-button>
+          <el-button @click="resetForm">Reset</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -66,7 +61,10 @@ export default {
         password: ''
       }
     },
-    submitForm () {}
+    submitForm (e) {
+      e.preventDefault()
+      this.$http.post('/api/register', this.registerForm)
+    }
   }
 }
 </script>

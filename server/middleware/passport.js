@@ -1,24 +1,11 @@
 const dblogger = require('debug')('steamroi:db')
 const passport = require('passport')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
 const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
 
-const { connectDb } = require('../database')
 const User = require('../database/schemas/User')
 
 module.exports = function (app) {
-  passport.serializeUser(function (user, done) {
-    done(null, user)
-  })
-
-  passport.deserializeUser(function (user, done) {
-    User.findById(user.id, function (err, user) {
-      done(err, user)
-    })
-  })
-
   // Steam Strategy
   passport.use(
     new SteamStrategy(
@@ -40,60 +27,52 @@ module.exports = function (app) {
   passport.use(
     new LocalStrategy(
       {
-        passReqToCallback: true,
         usernameField: 'email',
         passwordField: 'password'
       },
-      function (req, email, password, done) {
+      function (email, password, done) {
         let newUser
 
-        User.findOne({ username: email }, async function (err, user) {
-          if (err) {
-            return done(err, false)
-          }
+        User.findOne({ username: email }, function (err, user) {
+          if (err) return done(err)
           if (user) {
             // user email exists
-            return done(null, false)
+            dblogger('Username already exists.')
+            return done(new Error('Username already exists.'), false)
           } else {
+            dblogger('Creating new user')
             // create a new user
             newUser = new User({
               username: email,
               password
             })
-            try {
-              await newUser.save()
-              return done(null, newUser)
-            } catch (error) {
-              return done(error, false)
-            }
+
+            newUser
+              .save()
+              .then(u => {
+                return done(null, u)
+              })
+              .catch(error => {
+                return done(error, false)
+              })
           }
         })
       }
     )
   )
 
-  connectDb()
-    .then(async connection => {
-      app.use(
-        session({
-          secret: process.env.SESSIONS_SECRET,
-          name: 'session-auth',
-          cookie: {
-            maxAge: 3600000
-          },
-          resave: true,
-          saveUninitialized: true,
-          store: new MongoStore({
-            mongooseConnection: connection
-          })
-        })
-      )
-      dblogger('Established sessions DB connection')
+  passport.serializeUser(function (user, done) {
+    done(null, user.id)
+  })
+
+  passport.deserializeUser(function (user, done) {
+    User.findById(user.id, function (err, user) {
+      if (err) {
+        return done(err, false)
+      }
+      done(null, user)
     })
-    .catch(err => {
-      dblogger('Could not establish sessions connection')
-      throw new Error(err.message)
-    })
+  })
 
   app.use(passport.initialize())
   app.use(passport.session())
