@@ -1,11 +1,27 @@
-const dblogger = require('debug')('steamroi:db')
+const dblogger = require('debug')('steamroi:passport')
 const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
 
 const User = require('../database/schemas/User')
 
-module.exports = function (app) {
+module.exports = function () {
+  passport.serializeUser(function (user, done) {
+    if (!user) {
+      done(null)
+    }
+    done(null, user.id)
+  })
+
+  passport.deserializeUser(function (user, done) {
+    User.findById(user.id, function (err, user) {
+      if (err) {
+        return done(err, false)
+      }
+      done(null, user)
+    })
+  })
+
   // Steam Strategy
   passport.use(
     new SteamStrategy(
@@ -32,15 +48,16 @@ module.exports = function (app) {
       },
       function (email, password, done) {
         let newUser
+        const usernameExistsMessage = 'username already exists'
 
         User.findOne({ username: email }, function (err, user) {
           if (err) return done(err)
           if (user) {
             // user email exists
-            dblogger('Username already exists.')
-            return done(new Error('Username already exists.'), false)
+            dblogger(usernameExistsMessage)
+            return done(null, false, { message: usernameExistsMessage })
           } else {
-            dblogger('Creating new user')
+            dblogger('creating new user')
             // create a new user
             newUser = new User({
               username: email,
@@ -50,30 +67,14 @@ module.exports = function (app) {
             newUser
               .save()
               .then(u => {
-                return done(null, u)
+                return done(null, u, { message: 'user created' })
               })
               .catch(error => {
-                return done(error, false)
+                return done(error)
               })
           }
         })
       }
     )
   )
-
-  passport.serializeUser(function (user, done) {
-    done(null, user.id)
-  })
-
-  passport.deserializeUser(function (user, done) {
-    User.findById(user.id, function (err, user) {
-      if (err) {
-        return done(err, false)
-      }
-      done(null, user)
-    })
-  })
-
-  app.use(passport.initialize())
-  app.use(passport.session())
 }
