@@ -85,7 +85,8 @@ app.get('*', (req, res) => {
     title: 'Steam ROI',
     url: req.url,
     isProduction,
-    disableDatabase
+    disableDatabase,
+    user: req.user
   }
 
   bundleRenderer.renderToString(context, (err, html) => {
@@ -93,7 +94,7 @@ app.get('*', (req, res) => {
       if (+err.message === 404) {
         res.status(404).end('Page not found')
       } else {
-        console.log(err)
+        dblogger(err)
         res.status(500).end('Internal Server Error')
       }
     }
