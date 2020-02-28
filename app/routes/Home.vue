@@ -11,14 +11,9 @@
 </template>
 
 <script>
-import PageHeader from '~components/PageHeader.vue'
-
 export default {
   metaInfo: {
     title: 'Steam ROI - Home'
-  },
-  components: {
-    PageHeader
   },
   data () {
     return {

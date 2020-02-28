@@ -10,25 +10,29 @@
         <el-form-item label="E-mail">
           <el-input
             id="email"
-            name="email"
             v-model="registerForm.email"
+            name="email"
             placeholder="E-mail"
             required
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="Password">
           <el-input
             id="password"
-            name="password"
             v-model="registerForm.password"
+            name="password"
             show-password
             placeholder="Password"
             required
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item>
-          <el-button @click="submitForm" type="success">Create</el-button>
-          <el-button @click="resetForm">Reset</el-button>
+          <el-button type="success" @click="submitForm">
+            Create
+          </el-button>
+          <el-button @click="resetForm">
+            Reset
+          </el-button>
         </el-form-item>
       </el-form>
     </el-main>
