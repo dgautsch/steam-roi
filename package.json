@@ -99,6 +99,7 @@
     "modern-node": "2.6.0",
     "mongodb-memory-server": "6.1.1",
     "nodemon-webpack-plugin": "4.2.1",
+    "regenerator-runtime": "0.13.3",
     "standard": "14.1.0",
     "vue-eslint-parser": "7.0.0",
     "vue-hot-reload-api": "2.3.4",

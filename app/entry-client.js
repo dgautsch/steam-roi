@@ -1,4 +1,5 @@
 import { createApp } from './app'
+import '~config'
 
 const { app, router, store } = createApp()
 

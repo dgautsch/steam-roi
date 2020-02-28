@@ -59,6 +59,7 @@ const baseConfig = {
     alias: {
       '~assets': path.resolve(__dirname, '../app/assets'),
       '~components': path.resolve(__dirname, '../app/components'),
+      '~config': path.resolve(__dirname, '../config'),
       '~plugins': path.resolve(__dirname, '../app/plugins'),
       '~routes': path.resolve(__dirname, '../app/routes'),
       '~sass': path.resolve(__dirname, '../app/sass'),

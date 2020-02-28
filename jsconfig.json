@@ -6,6 +6,7 @@
     "paths": {
       "~assets/*": ["app/assets/*"],
       "~components/*": ["app/components/*"],
+      "~config/*": ["config/*"],
       "~plugins/*": ["app/plugins/*"],
       "~routes/*": ["app/routes/*"],
       "~sass/*": ["app/sass/*"],
