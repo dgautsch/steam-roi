@@ -80,13 +80,13 @@ if (!disableDatabase) {
 }
 
 app.use('/public/', express.static(path.join(__dirname, '../public')))
-app.get('*', (req, res) => {
+app.get('*', ({ user, url }, res) => {
   const context = {
     title: 'Steam ROI',
-    url: req.url,
+    url,
     isProduction,
     disableDatabase,
-    user: req.user
+    user
   }
 
   bundleRenderer.renderToString(context, (err, html) => {
