@@ -1,6 +1,11 @@
 <template>
   <div class="sroi-site-navigation">
-    <el-button type="success" icon="el-icon-menu" circle @click="handleClick" />
+    <el-button
+      type="success"
+      icon="el-icon-menu"
+      circle
+      @click="handleClick"
+    />
     <el-drawer :visible.sync="drawerOpen" direction="ltr">
       <template v-slot:title>
         <h3>Navigation</h3>

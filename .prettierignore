@@ -2,3 +2,5 @@ public
 dist
 reports
 app/templates
+# Look to implement this to disable template formatting https://github.com/meteorlxy/eslint-plugin-prettier-vue
+*.vue
