@@ -12,11 +12,14 @@ Eventually, when you login you will be able to see the games you own and how muc
 
 ## In Progress
 
-- [ ] Lazy load the games. Currently rate limited by steam. Can only do 200 games every 5 minutes.
-- [ ] Provide user feedback when search is in progress.
-- [ ] Request Caching
-- [ ] Unit testing framework
-- [ ] Sass compilation for global styles
-- [ ] State hydration, VueX
-- [ ] Implement Vue Router
-- [ ] Address `connect.session() MemoryStore is not designed for a production environment, as it will leak`
+- [x] Unit testing framework
+- [x] Sass compilation for global styles
+- [x] State hydration, VueX
+- [x] Implement Vue Router
+- [x] Address `connect.session() MemoryStore is not designed for a production environment, as it will leak`
+- [ ] Fix config so variables are shared server to client
+- [ ] Add auth middleware to secure private routes
+- [ ] Add vue router auth meta to secure private routes
+- [ ] Create server process to scrape steam API for game data
+- [ ] Setup API route to get scraped games from app database
+- [ ] Fix routes being title cased e.g. `Router` vs `router`
