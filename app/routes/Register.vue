@@ -27,7 +27,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="submitForm">
+          <el-button type="success" @click.prevent="submitForm">
             Create
           </el-button>
           <el-button @click="resetForm">
@@ -40,7 +40,15 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import PageHeader from '~components/PageHeader.vue'
+import { REGISTER_USER } from '~data'
+
+const userModel = {
+  email: '',
+  password: ''
+}
 
 export default {
   metaInfo: {
@@ -52,22 +60,25 @@ export default {
   data () {
     return {
       title: 'Register',
-      registerForm: {
-        email: '',
-        password: ''
-      }
+      registerForm: userModel
     }
   },
   methods: {
+    ...mapActions({
+      registerUser: REGISTER_USER
+    }),
     resetForm () {
-      this.registerForm = {
-        email: '',
-        password: ''
-      }
+      this.registerForm = userModel
     },
-    submitForm (e) {
-      e.preventDefault()
-      this.$http.post('/api/register', this.registerForm)
+    async submitForm () {
+      try {
+        await this.registerUser({
+          client: this.$http,
+          payload: this.registerForm
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
