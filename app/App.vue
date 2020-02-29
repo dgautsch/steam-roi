@@ -7,7 +7,9 @@
         </el-col>
         <el-col :span="8">
           <h1 class="sroi-site-title">
-            <router-link to="/">Site</router-link>
+            <router-link to="/">
+              Site
+            </router-link>
           </h1>
         </el-col>
         <el-col :span="8" class="sroi-logout">
@@ -21,27 +23,28 @@
       <el-main>
         <router-view />
       </el-main>
-      <el-footer class="sroi-footer">Copyright {{ getYear }}</el-footer>
+      <el-footer class="sroi-footer"> Copyright {{ getYear }} </el-footer>
     </el-container>
   </el-container>
 </template>
 
 <script>
 import NavLink from '~components/NavLink'
-import PageLink from '~components/PageLink'
 import SiteNavigation from '~components/SiteNavigation'
 
 export default {
   name: 'AppRoot',
   components: {
     NavLink,
-    PageLink,
     SiteNavigation
   },
   computed: {
     getYear () {
       return new Date().getFullYear()
     }
+  },
+  mounted () {
+    this.$logger.log('App mounted')
   }
 }
 </script>
