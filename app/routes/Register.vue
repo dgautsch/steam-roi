@@ -43,7 +43,7 @@
 import { mapActions } from 'vuex'
 
 import PageHeader from '~components/PageHeader.vue'
-import { REGISTER_USER } from '~data'
+import { REGISTER_USER } from '~store'
 
 const userModel = {
   email: '',

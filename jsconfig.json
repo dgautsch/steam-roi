@@ -8,7 +8,7 @@
       "~assets/*": ["app/assets/*"],
       "~components/*": ["app/components/*"],
       "~config/*": ["config/*"],
-      "~data/*": ["app/data/*"],
+      "~store/*": ["app/store/*"],
       "~plugins/*": ["app/plugins/*"],
       "~routes/*": ["app/routes/*"],
       "~sass/*": ["app/sass/*"],
