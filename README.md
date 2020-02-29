@@ -22,4 +22,4 @@ Eventually, when you login you will be able to see the games you own and how muc
 - [ ] Add vue router auth meta to secure private routes
 - [ ] Create server process to scrape steam API for game data
 - [ ] Setup API route to get scraped games from app database
-- [ ] Fix routes being title cased e.g. `Router` vs `router`
+- [x] Fix routes being title cased e.g. `Router` vs `router`
