@@ -54,14 +54,14 @@ describe('User', () => {
   it('updates a user password', async () => {
     testUser.password = 'foobar'
     await testUser.save()
-    const isMatch = await testUser.comparePassword('foobar')
+    const isMatch = await testUser.verifyPassword('foobar')
     expect(isMatch).toBeTruthy()
   })
 
   it('does not update a password if not changed', async () => {
     testUser.password = MOCK_USER.password
     await testUser.save()
-    const isMatch = testUser.comparePassword(MOCK_USER.password)
+    const isMatch = testUser.verifyPassword(MOCK_USER.password)
     expect(isMatch).toBeTruthy()
   })
 
@@ -83,15 +83,15 @@ describe('User', () => {
     bcrypt.hash.mockRestore()
   })
 
-  describe('comparePassword', () => {
+  describe('verifyPassword', () => {
     it('should match passwords', async () => {
-      testUser.comparePassword('testpassword', (err, isMatch) => {
+      testUser.verifyPassword('testpassword', (err, isMatch) => {
         expect(isMatch).toBeTruthy()
       })
     })
 
     it('should reject unmatched passwords', async () => {
-      testUser.comparePassword('testpassword2', (err, isMatch) => {
+      testUser.verifyPassword('testpassword2', (err, isMatch) => {
         expect(isMatch).toBeFalsy()
       })
     })
@@ -100,7 +100,7 @@ describe('User', () => {
       jest.spyOn(bcrypt, 'compare').mockImplementation((pw, pw2, cb) => {
         cb(new Error('error'))
       })
-      await expect(testUser.comparePassword('testpassword2')).rejects.toEqual(
+      await expect(testUser.verifyPassword('testpassword2')).rejects.toEqual(
         new Error('error')
       )
       bcrypt.compare.mockRestore()
