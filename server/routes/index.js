@@ -1,6 +1,8 @@
-const r = (module.exports = require('express').Router())
+const r = require('express').Router()
 
-r.use(require('./account'))
-r.use(require('./auth'))
-r.use(require('./register'))
-r.use(require('./steam'))
+module.exports = {
+  account: r.use(require('./account')),
+  auth: r.use(require('./auth')),
+  register: r.use(require('./register')),
+  steam: r.use(require('./steam'))
+}

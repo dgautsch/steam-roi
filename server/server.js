@@ -8,7 +8,7 @@ const { createBundleRenderer } = require('vue-server-renderer')
 
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
-const routes = require('./routes')
+const { account, auth, register } = require('./routes')
 const { passportStrategies } = require('./middleware')
 const { connectDb, connectDefaultDb } = require('./database')
 const session = require('express-session')
@@ -38,48 +38,11 @@ if (isProduction) {
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cookieParser())
-// Database
-if (!disableDatabase) {
-  connectDefaultDb()
-    .then(() => {
-      dblogger('Established default DB connection')
-      connectDb()
-        .then(connection => {
-          passportStrategies()
-          app.use(
-            session({
-              secret: process.env.SESSIONS_SECRET,
-              name: 'session-auth',
-              cookie: {
-                maxAge: 3600000
-              },
-              resave: true,
-              saveUninitialized: true,
-              store: new MongoStore({
-                mongooseConnection: connection
-              })
-            })
-          )
-          dblogger('Established sessions DB connection')
-          dblogger('Initializing Passport')
-          app.use(passport.initialize())
-          app.use(passport.session())
 
-          // Route Handling
-          app.use('/api/', routes)
-        })
-        .catch(err => {
-          dblogger('Could not establish sessions connection')
-          throw new Error(err.message)
-        })
-    })
-    .catch(err => {
-      dblogger('Could not establish database connection')
-      throw new Error(err.message)
-    })
-}
-
+// Register static asset routes
 app.use('/public/', express.static(path.join(__dirname, '../public')))
+
+// Send all other requests to Vue SSR
 app.get('*', ({ user, url }, res) => {
   const context = {
     title: 'Steam ROI',
@@ -101,5 +64,50 @@ app.get('*', ({ user, url }, res) => {
     res.end(html)
   })
 })
+// Database
+if (!disableDatabase) {
+  connectDefaultDb()
+    .then(() => {
+      dblogger('Established default DB connection')
+      connectDb()
+        .then(connection => {
+          // Enable our Passport auth strategies
+          passportStrategies()
+
+          // Setup session storage of auth tokens
+          app.use(
+            session({
+              secret: process.env.SESSIONS_SECRET,
+              name: 'session-auth',
+              cookie: {
+                maxAge: 3600000
+              },
+              resave: true,
+              saveUninitialized: true,
+              store: new MongoStore({
+                mongooseConnection: connection
+              })
+            })
+          )
+          dblogger('Established sessions DB connection')
+          dblogger('Initializing Passport')
+
+          // Initialize sessions and passport strategies
+          app.use(passport.initialize())
+          app.use(passport.session())
+
+          // Register Auth API routes
+          app.use('/api/', [register, auth, account])
+        })
+        .catch(err => {
+          dblogger('Could not establish sessions connection')
+          throw new Error(err.message)
+        })
+    })
+    .catch(err => {
+      dblogger('Could not establish database connection')
+      throw new Error(err.message)
+    })
+}
 
 module.exports = app
