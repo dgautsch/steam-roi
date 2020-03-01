@@ -8,7 +8,7 @@ const { createBundleRenderer } = require('vue-server-renderer')
 
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
-const { account, auth, register } = require('./routes')
+const { account, authSteam, login, register } = require('./routes')
 const { passportStrategies } = require('./middleware')
 const { connectDb, connectDefaultDb } = require('./database')
 const session = require('express-session')
@@ -71,9 +71,6 @@ if (!disableDatabase) {
       dblogger('Established default DB connection')
       connectDb()
         .then(connection => {
-          // Enable our Passport auth strategies
-          passportStrategies()
-
           // Setup session storage of auth tokens
           app.use(
             session({
@@ -91,13 +88,14 @@ if (!disableDatabase) {
           )
           dblogger('Established sessions DB connection')
           dblogger('Initializing Passport')
-
+          // Enable our Passport auth strategies
+          passportStrategies(passport)
           // Initialize sessions and passport strategies
           app.use(passport.initialize())
           app.use(passport.session())
 
           // Register Auth API routes
-          app.use('/api/', [register, auth, account])
+          app.use('/api/', [register, authSteam, account, login])
         })
         .catch(err => {
           dblogger('Could not establish sessions connection')
