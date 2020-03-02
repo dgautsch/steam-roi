@@ -27,7 +27,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click.prevent="submitForm">
+          <el-button type="success" @click.prevent="onSubmit">
             Create
           </el-button>
           <el-button @click="resetForm">
@@ -70,7 +70,7 @@ export default {
     resetForm () {
       this.registerForm = userModel
     },
-    async submitForm () {
+    async onSubmit () {
       try {
         await this.registerUser({
           client: this.$http,

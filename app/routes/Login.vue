@@ -4,29 +4,30 @@
       <PageHeader :title="title" />
     </el-header>
     <el-main>
-      <el-form
-        label-position="left"
-        label-width="100px"
-        :noValidate="noValidate"
-        @submit.prevent="onSubmit"
-      >
-        <el-form-item label="Username">
+      <el-form label-position="left" label-width="100px">
+        <el-form-item label="E-mail">
           <el-input
-            v-model.trim="loginForm.userName"
-            placeholder="Username"
+            id="email"
+            v-model="loginForm.email"
+            name="email"
+            placeholder="E-mail"
             required
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="Password">
           <el-input
+            id="password"
             v-model="loginForm.password"
+            name="password"
             show-password
             placeholder="Password"
             required
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" native-type="submit">Login</el-button>
+          <el-button type="success" @click.prevent="onSubmit">
+            Login
+          </el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -34,7 +35,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import PageHeader from '~components/PageHeader.vue'
+import { LOGIN_USER } from '~store'
 
 export default {
   metaInfo: {
@@ -46,19 +50,25 @@ export default {
   data () {
     return {
       title: 'Login',
-      noValidate: false,
       loginForm: {
-        userName: '',
+        email: '',
         password: ''
       }
     }
   },
-  mounted () {
-    this.noValidate = true
-  },
   methods: {
-    onSubmit () {
-      console.log(this.loginForm)
+    ...mapActions({
+      loginUser: LOGIN_USER
+    }),
+    async onSubmit () {
+      try {
+        await this.loginUser({
+          client: this.$http,
+          payload: this.loginForm
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

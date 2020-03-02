@@ -99,7 +99,7 @@ module.exports = function (passport) {
 
           // return authenticaterd user
           dblogger(`Logging in ${user}`)
-          return done(null, user)
+          return done(null, user, { message: 'USER_AUTHENTICATED' })
         })
       }
     )

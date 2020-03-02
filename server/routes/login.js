@@ -15,7 +15,7 @@ module.exports = function (passport) {
       req.login(user, e => {
         if (e) return next(e)
         res
-          .status(201)
+          .status(200)
           .json({
             code: info.message
           })
