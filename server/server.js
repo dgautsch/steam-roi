@@ -8,12 +8,12 @@ const { createBundleRenderer } = require('vue-server-renderer')
 
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
-const { account, authSteam, login, register } = require('./routes')
 const { passportStrategies } = require('./middleware')
 const { connectDb, connectDefaultDb } = require('./database')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const passport = require('passport')
+const routes = require('./routes')
 const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
 const template = fs.readFileSync(
@@ -71,6 +71,7 @@ if (!disableDatabase) {
       dblogger('Established default DB connection')
       connectDb()
         .then(connection => {
+          dblogger('Established sessions DB connection')
           // Setup session storage of auth tokens
           app.use(
             session({
@@ -86,7 +87,6 @@ if (!disableDatabase) {
               })
             })
           )
-          dblogger('Established sessions DB connection')
           dblogger('Initializing Passport')
           // Enable our Passport auth strategies
           passportStrategies(passport)
@@ -95,15 +95,15 @@ if (!disableDatabase) {
           app.use(passport.session())
 
           // Register Auth API routes
-          app.use('/api/', [register, authSteam, account, login])
+          app.use('/api/', routes(passport))
         })
         .catch(err => {
-          dblogger('Could not establish sessions connection')
+          dblogger(err)
           throw new Error(err.message)
         })
     })
     .catch(err => {
-      dblogger('Could not establish database connection')
+      dblogger(err)
       throw new Error(err.message)
     })
 }

@@ -1,11 +1,10 @@
 const dblogger = require('debug')('steamroi:passport')
-const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
 
 const User = require('../database/schemas/User')
 
-module.exports = function () {
+module.exports = function (passport) {
   passport.serializeUser(function (user, done) {
     if (!user) {
       done(null)
@@ -39,8 +38,9 @@ module.exports = function () {
     )
   )
 
-  // Local Strategy
+  // Local Register Strategy
   passport.use(
+    'local-register',
     new LocalStrategy(
       {
         usernameField: 'email',
@@ -48,16 +48,14 @@ module.exports = function () {
       },
       function (email, password, done) {
         let newUser
-        const usernameExistsMessage = 'username already exists'
 
         User.findOne({ username: email }, function (err, user) {
           if (err) return done(err)
           if (user) {
-            // user email exists
-            dblogger(usernameExistsMessage)
-            return done(null, false, { message: usernameExistsMessage })
+            dblogger(`User ${user} exists, cancelling account creation.`)
+            return done(null, false, { message: 'USER_EXISTS' })
           } else {
-            dblogger('creating new user')
+            dblogger(`creating new user ${email}`)
             // create a new user
             newUser = new User({
               username: email,
@@ -67,12 +65,41 @@ module.exports = function () {
             newUser
               .save()
               .then(u => {
-                return done(null, u, { message: 'user created' })
+                return done(null, u, { message: 'USER_CREATED' })
               })
               .catch(error => {
                 return done(error)
               })
           }
+        })
+      }
+    )
+  )
+
+  passport.use(
+    'local-login',
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password'
+      },
+      function (email, password, done) {
+        User.findOne({ username: email }, function (err, user) {
+          if (err) return done(err)
+
+          // no user was found
+          if (!user) {
+            return done(null, false, { message: 'USER_NOT_FOUND' })
+          }
+
+          // verify password matches
+          if (!user.verifyPassword(password)) {
+            return done(null, false, { message: 'INVALID_PASSWORD' })
+          }
+
+          // return authenticaterd user
+          dblogger(`Logging in ${user}`)
+          return done(null, user)
         })
       }
     )
