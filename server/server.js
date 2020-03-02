@@ -41,6 +41,7 @@ app.use(cookieParser())
 
 // Register static asset routes
 app.use('/public/', express.static(path.join(__dirname, '../public')))
+app.use('/static/', express.static(path.join(__dirname, '../static')))
 
 // Send all other requests to Vue SSR
 app.get('*', ({ user, url }, res) => {
@@ -87,7 +88,7 @@ if (!disableDatabase) {
               })
             })
           )
-          dblogger('Initializing Passport')
+          dblogger('Initializing Passport strategies')
           // Enable our Passport auth strategies
           passportStrategies(passport)
           // Initialize sessions and passport strategies
