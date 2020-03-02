@@ -1,4 +1,5 @@
 import { createApp } from './app'
+import config from '~config'
 
 // Receives the context of the render call, returning a Promise resolution to the root Vue instance.
 export default context =>
@@ -12,6 +13,11 @@ export default context =>
     // wait until router has resolved possible async components and hooks
     router.onReady(() => {
       context.rendered = () => {
+        // Grab the user from the context and store in the store
+        store.state.user = context.user
+        // store build time config
+        store.state.config = config
+
         // After the app is rendered, our store is now
         // filled with the state from our components.
         // When we attach the state to the context, and the `template` option

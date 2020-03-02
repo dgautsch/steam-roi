@@ -1,12 +1,8 @@
 <template>
-  <router-link :to="to" v-slot="{ href, isActive, navigate, route }">
-    <PageLink
-      :active="isActive"
-      :href="href"
-      @click="navigate"
-      v-bind="$attrs"
-      >{{ route.name }}</PageLink
-    >
+  <router-link v-slot="{ href, isActive, navigate, route }" :to="to">
+    <PageLink :active="isActive" :href="href" v-bind="$attrs" @click="navigate">
+      {{ route.name }}
+    </PageLink>
   </router-link>
 </template>
 

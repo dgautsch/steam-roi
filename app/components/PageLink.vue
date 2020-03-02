@@ -10,13 +10,13 @@
     v-bind="$attrs"
     v-on="$listeners"
   >
-    <i :class="icon" v-if="icon"></i>
+    <i v-if="icon.length > 0" :class="icon" />
     <span v-if="$slots.default" class="el-link--inner">
-      <slot></slot>
+      <slot />
     </span>
 
     <template v-if="$slots.icon">
-      <slot v-if="$slots.icon" name="icon"></slot>
+      <slot v-if="$slots.icon" name="icon" />
     </template>
   </a>
 </template>
@@ -35,8 +35,14 @@ export default {
       default: true
     },
     disabled: Boolean,
-    href: String,
-    icon: String
+    href: {
+      type: String,
+      default: '#'
+    },
+    icon: {
+      type: String,
+      default: ''
+    }
   }
 }
 </script>

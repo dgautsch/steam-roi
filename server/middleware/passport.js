@@ -1,19 +1,27 @@
-const { connectDb } = require('../database')
-const dblogger = require('debug')('steamroi:db')
-const passport = require('passport')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const dblogger = require('debug')('steamroi:passport')
 const SteamStrategy = require('passport-steam').Strategy
+const LocalStrategy = require('passport-local').Strategy
 
-module.exports = function (app) {
+const User = require('../database/schemas/User')
+
+module.exports = function (passport) {
   passport.serializeUser(function (user, done) {
-    done(null, user)
+    if (!user) {
+      done(null)
+    }
+    done(null, user.id)
   })
 
-  passport.deserializeUser(function (obj, done) {
-    done(null, obj)
+  passport.deserializeUser(function (user, done) {
+    User.findById(user.id, function (err, user) {
+      if (err) {
+        return done(err, false)
+      }
+      done(null, user)
+    })
   })
 
+  // Steam Strategy
   passport.use(
     new SteamStrategy(
       {
@@ -29,29 +37,71 @@ module.exports = function (app) {
       }
     )
   )
-  connectDb()
-    .then(async connection => {
-      app.use(
-        session({
-          secret: process.env.SESSIONS_SECRET,
-          name: 'Steam Session',
-          cookie: {
-            maxAge: 3600000
-          },
-          resave: true,
-          saveUninitialized: true,
-          store: new MongoStore({
-            mongooseConnection: connection
-          })
-        })
-      )
-      dblogger('Established sessions DB connection')
-    })
-    .catch(err => {
-      dblogger('Could not establish sessions connection')
-      throw new Error(err.message)
-    })
 
-  app.use(passport.initialize())
-  app.use(passport.session())
+  // Local Register Strategy
+  passport.use(
+    'local-register',
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password'
+      },
+      function (email, password, done) {
+        let newUser
+
+        User.findOne({ username: email }, function (err, user) {
+          if (err) return done(err)
+          if (user) {
+            dblogger(`User ${user} exists, cancelling account creation.`)
+            return done(null, false, { message: 'USER_EXISTS' })
+          } else {
+            dblogger(`creating new user ${email}`)
+            // create a new user
+            newUser = new User({
+              username: email,
+              password
+            })
+
+            newUser
+              .save()
+              .then(u => {
+                return done(null, u, { message: 'USER_CREATED' })
+              })
+              .catch(error => {
+                return done(error)
+              })
+          }
+        })
+      }
+    )
+  )
+
+  passport.use(
+    'local-login',
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password'
+      },
+      function (email, password, done) {
+        User.findOne({ username: email }, function (err, user) {
+          if (err) return done(err)
+
+          // no user was found
+          if (!user) {
+            return done(null, false, { message: 'USER_NOT_FOUND' })
+          }
+
+          // verify password matches
+          if (!user.verifyPassword(password)) {
+            return done(null, false, { message: 'INVALID_PASSWORD' })
+          }
+
+          // return authenticaterd user
+          dblogger(`Logging in ${user}`)
+          return done(null, user)
+        })
+      }
+    )
+  )
 }

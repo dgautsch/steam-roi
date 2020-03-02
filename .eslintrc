@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "standard",
+    "plugin:jest/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module"
+  },
+  "overrides":[{
+    "extends": ["plugin:vue/recommended"],
+    "files": ["**/*.vue"],
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+      "parser": "babel-eslint",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "vue",
+      "html"
+    ],
+    "rules": {
+      "vue/max-attributes-per-line": ["error", {
+        "singleline": 3,
+        "multiline": {
+          "max": 1,
+          "allowFirstLine": false
+        }
+      }]
+    }
+  }],
+  "plugins": [
+    "jest"
+  ]
+}

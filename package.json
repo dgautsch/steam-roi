@@ -18,7 +18,9 @@
     "start": "npm run build && cross-env NODE_ENV=production npm run server:start",
     "server:start": "node ./server/index.js",
     "server:debug": "node --inspect-brk ./server/index.js",
-    "test": "modern test",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "test:debug": "cross-env NODE_ENV=test node --inspect-brk=0.0.0.0 ./node_modules/.bin/jest --runInBand --collectCoverage false",
+    "test:watch": "npm run test -- --watch --collectCoverage false",
     "watch": "run-p watch:client watch:server",
     "watch:client": "cross-env NODE_ENV=development webpack-dev-server --config webpack/webpack.client.js",
     "watch:server": "cross-env NODE_ENV=development webpack -w --config webpack/webpack.server.js"
@@ -45,8 +47,10 @@
     "@babel/plugin-syntax-dynamic-import": "7.7.4",
     "@babel/preset-env": "7.7.4",
     "async": "2.6.0",
+    "axios": "0.19.2",
     "babel-loader": "8.0.6",
     "babel-plugin-component": "1.1.1",
+    "bcrypt": "3.0.7",
     "body-parser": "1.18.2",
     "connect-mongo": "3.2.0",
     "cookie-parser": "1.4.3",
@@ -63,9 +67,9 @@
     "node-sass": "4.13.0",
     "npm-run-all": "4.1.5",
     "passport": "0.4.0",
+    "passport-local": "1.0.0",
     "passport-steam": "1.0.12",
     "sass-loader": "8.0.0",
-    "standard": "14.1.0",
     "steamapi": "2.0.7",
     "url-loader": "3.0.0",
     "vue": "2.6.11",
@@ -84,12 +88,22 @@
     "webpack-node-externals": "1.7.2"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "7.7.6",
+    "@types/jest": "24.0.24",
     "babel-eslint": "10.0.3",
+    "babel-jest": "24.9.0",
+    "eslint": "6.8.0",
+    "eslint-plugin-html": "6.0.0",
     "eslint-plugin-jest": "23.1.0",
+    "eslint-plugin-vue": "6.1.2",
     "modern-node": "2.6.0",
-    "nodemon": "2.0.1",
+    "mongodb-memory-server": "6.1.1",
     "nodemon-webpack-plugin": "4.2.1",
+    "regenerator-runtime": "0.13.3",
+    "standard": "14.1.0",
+    "vue-eslint-parser": "7.0.0",
     "vue-hot-reload-api": "2.3.4",
+    "vue-jest": "3.0.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0"
   },
@@ -101,7 +115,10 @@
     "endOfLine": "lf"
   },
   "standard": {
-    "env": "node",
+    "env": {
+      "node": true,
+      "jest/globals": true
+    },
     "parser": "babel-eslint"
   }
 }

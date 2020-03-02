@@ -5,35 +5,50 @@
         <PageHeader :title="title" />
       </el-container>
     </el-header>
-    <el-container>
+    <el-main>
       <el-form label-position="left" label-width="100px">
-        <el-form-item label="Username">
-          <el-input
-            v-model="loginForm.userName"
-            placeholder="Username"
-          ></el-input>
-        </el-form-item>
         <el-form-item label="E-mail">
-          <el-input v-model="loginForm.email" placeholder="E-mail"></el-input>
+          <el-input
+            id="email"
+            v-model="registerForm.email"
+            name="email"
+            placeholder="E-mail"
+            required
+          />
         </el-form-item>
         <el-form-item label="Password">
           <el-input
-            v-model="loginForm.password"
+            id="password"
+            v-model="registerForm.password"
+            name="password"
             show-password
             placeholder="Password"
-          ></el-input>
+            required
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="submitForm()">Create</el-button>
-          <el-button @click="resetForm()">Reset</el-button>
+          <el-button type="success" @click.prevent="submitForm">
+            Create
+          </el-button>
+          <el-button @click="resetForm">
+            Reset
+          </el-button>
         </el-form-item>
       </el-form>
-    </el-container>
+    </el-main>
   </el-container>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import PageHeader from '~components/PageHeader.vue'
+import { REGISTER_USER } from '~store'
+
+const userModel = {
+  email: '',
+  password: ''
+}
 
 export default {
   metaInfo: {
@@ -45,10 +60,24 @@ export default {
   data () {
     return {
       title: 'Register',
-      loginForm: {
-        userName: '',
-        email: '',
-        password: ''
+      registerForm: userModel
+    }
+  },
+  methods: {
+    ...mapActions({
+      registerUser: REGISTER_USER
+    }),
+    resetForm () {
+      this.registerForm = userModel
+    },
+    async submitForm () {
+      try {
+        await this.registerUser({
+          client: this.$http,
+          payload: this.registerForm
+        })
+      } catch (error) {
+        console.log(error)
       }
     }
   }

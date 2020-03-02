@@ -1,7 +1,8 @@
+/* eslint-disable indent */
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const { VueSSRClientPlugin } = require('vue-ssr-webpack-plugin')
+const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const baseConfig = require('./webpack.base')
@@ -26,7 +27,6 @@ let clientConfig = {
     new VueSSRClientPlugin(),
     ...(isProduction === true
       ? [
-          /* eslint-disable indent */
           new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false,

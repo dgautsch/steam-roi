@@ -5,7 +5,7 @@
       icon="el-icon-menu"
       circle
       @click="handleClick"
-    ></el-button>
+    />
     <el-drawer :visible.sync="drawerOpen" direction="ltr">
       <template v-slot:title>
         <h3>Navigation</h3>
@@ -20,10 +20,10 @@
             <NavLink to="/" />
           </el-menu-item>
           <el-menu-item index="2">
-            <NavLink to="/Login" />
+            <NavLink to="/login" />
           </el-menu-item>
           <el-menu-item index="3">
-            <NavLink to="/Register" />
+            <NavLink to="/register" />
           </el-menu-item>
         </el-menu>
       </template>
@@ -38,12 +38,6 @@ export default {
   name: 'SiteNavigation',
   components: {
     NavLink
-  },
-  props: {
-    displayType: {
-      type: String,
-      required: false
-    }
   },
   data () {
     return {

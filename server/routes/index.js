@@ -1,5 +1,11 @@
-const r = (module.exports = require('express').Router())
+const r = require('express').Router()
 
-r.use(require('./account'))
-r.use(require('./auth'))
-r.use(require('./steam'))
+module.exports = function (passport) {
+  return [
+    r.use(require('./account')),
+    r.use(require('./auth-steam')),
+    r.use(require('./login')(passport)),
+    r.use(require('./register')(passport)),
+    r.use(require('./steam'))
+  ]
+}

@@ -3,14 +3,18 @@ const fs = require('fs')
 const logger = require('morgan')
 const dblogger = require('debug')('steamroi:db')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 const { createBundleRenderer } = require('vue-server-renderer')
 
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
+const { passportStrategies } = require('./middleware')
+const { connectDb, connectDefaultDb } = require('./database')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
+const passport = require('passport')
 const routes = require('./routes')
-const { passport } = require('./middleware')
-const { connectDb } = require('./database')
-const serverBundle = require('../public/vue-ssr-bundle.json')
+const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
 const template = fs.readFileSync(
   path.resolve(__dirname, '../app/templates/index.tpl.html'),
@@ -31,28 +35,21 @@ if (isProduction) {
   app.use(logger('dev'))
 }
 
-// Database
-if (!disableDatabase) {
-  passport(app, dblogger)
-  connectDb()
-    .then(() => {
-      dblogger('Database connected')
-    })
-    .catch(err => {
-      dblogger('Could not connect to database')
-      throw new Error(err.message)
-    })
-}
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cookieParser())
 
-// Route Handling
-app.use('/api/', routes)
+// Register static asset routes
 app.use('/public/', express.static(path.join(__dirname, '../public')))
-app.get('*', (req, res) => {
+
+// Send all other requests to Vue SSR
+app.get('*', ({ user, url }, res) => {
   const context = {
     title: 'Steam ROI',
-    url: req.url,
+    url,
     isProduction,
-    disableDatabase
+    disableDatabase,
+    user
   }
 
   bundleRenderer.renderToString(context, (err, html) => {
@@ -60,12 +57,55 @@ app.get('*', (req, res) => {
       if (+err.message === 404) {
         res.status(404).end('Page not found')
       } else {
-        console.log(err)
+        dblogger(err)
         res.status(500).end('Internal Server Error')
       }
     }
     res.end(html)
   })
 })
+// Database
+if (!disableDatabase) {
+  connectDefaultDb()
+    .then(() => {
+      dblogger('Established default DB connection')
+      connectDb()
+        .then(connection => {
+          dblogger('Established sessions DB connection')
+          // Setup session storage of auth tokens
+          app.use(
+            session({
+              secret: process.env.SESSIONS_SECRET,
+              name: 'session-auth',
+              cookie: {
+                maxAge: 3600000
+              },
+              resave: true,
+              saveUninitialized: true,
+              store: new MongoStore({
+                mongooseConnection: connection
+              })
+            })
+          )
+          dblogger('Initializing Passport')
+          // Enable our Passport auth strategies
+          passportStrategies(passport)
+          // Initialize sessions and passport strategies
+          app.use(passport.initialize())
+          app.use(passport.session())
+
+          // Register Auth API routes
+          app.use('/api/', routes(passport))
+        })
+        .catch(err => {
+          dblogger(err)
+          throw new Error(err.message)
+        })
+    })
+    .catch(err => {
+      dblogger(err)
+      throw new Error(err.message)
+    })
+}
 
 module.exports = app

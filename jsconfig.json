@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "~app/*": ["app/*"],
+      "~assets/*": ["app/assets/*"],
+      "~components/*": ["app/components/*"],
+      "~config/*": ["config/*"],
+      "~store/*": ["app/store/*"],
+      "~plugins/*": ["app/plugins/*"],
+      "~routes/*": ["app/routes/*"],
+      "~sass/*": ["app/sass/*"],
+      "~server/*": ["server/*"]
+    }
+  },
+  "exclude": ["node_modules", "Public", "coverage"]
+}

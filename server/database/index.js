@@ -1,18 +1,25 @@
 const mongoose = require('mongoose')
 
-const User = require('./schemas/User')
-const models = {
-  User
-}
-
 mongoose.set('useCreateIndex', true)
 
+const dbOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}
+
+const connectDefaultDb = () => {
+  return mongoose.connect(process.env.MONGO_URL, dbOptions)
+}
+
 const connectDb = () => {
-  return mongoose.createConnection(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+  return mongoose.createConnection(process.env.MONGO_URL, dbOptions)
+}
+
+const connectModel = (connection, model, schema) => {
+  const conn = connection || connectDb()
+  conn.model(model, schema)
 }
 
 exports.connectDb = connectDb
-exports.models = models
+exports.connectDefaultDb = connectDefaultDb
+exports.connectModel = connectModel
