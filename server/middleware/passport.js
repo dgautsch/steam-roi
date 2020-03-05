@@ -52,10 +52,9 @@ module.exports = function (passport) {
         User.findOne({ username: email }, function (err, user) {
           if (err) return done(err)
           if (user) {
-            dblogger(`User ${user} exists, cancelling account creation.`)
+            dblogger(`User ${user.id} exists, cancelling account creation.`)
             return done(null, false, { message: 'USER_EXISTS' })
           } else {
-            dblogger(`creating new user ${email}`)
             // create a new user
             newUser = new User({
               username: email,
