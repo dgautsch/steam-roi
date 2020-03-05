@@ -77,9 +77,9 @@ if (!disableDatabase) {
           app.use(
             session({
               secret: process.env.SESSIONS_SECRET,
-              name: 'session-auth',
+              name: 'x-session-auth',
               cookie: {
-                maxAge: 3600000
+                maxAge: 24 * 60 * 60 * 1000 // 24 Hours
               },
               resave: true,
               saveUninitialized: true,
