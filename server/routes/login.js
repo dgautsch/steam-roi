@@ -23,5 +23,11 @@ module.exports = function (passport) {
       })
     })(req, res, next)
   })
+
+  r.get('/logout', (req, res) => {
+    req.logout()
+    res.redirect('/')
+  })
+
   return r
 }

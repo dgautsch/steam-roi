@@ -1,11 +1,14 @@
-const r = (module.exports = require('express').Router())
-const isAuthenticated = require('../middleware/auth')
+const r = require('express').Router()
+const isAuthenticated = require('../middleware/is-authenticated')
 
-r.get('/account', isAuthenticated, (req, res) => {
-  res.location('account')
-})
+function account () {
+  r.get('/account', isAuthenticated, (req, res) => {
+    res.status(200).json({
+      code: 'AUTHORIZED'
+    })
+  })
 
-r.get('/logout', (req, res) => {
-  req.logout()
-  res.redirect('/')
-})
+  return r
+}
+
+module.exports = account

@@ -5,7 +5,9 @@
 //   login page.
 function isAuthenticated (req, res, next) {
   if (!req.isAuthenticated()) {
-    res.redirect('/login')
+    res.status(401).json({
+      code: 'UNAUTHORIZED'
+    })
   } else {
     return next()
   }

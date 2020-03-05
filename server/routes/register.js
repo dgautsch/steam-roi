@@ -19,8 +19,7 @@ module.exports = function (passport) {
         res
           .status(201)
           .json({
-            code: info.message,
-            username: req.user.username
+            code: info.message
           })
           .end()
       })
