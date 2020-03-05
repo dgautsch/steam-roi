@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
+import VueCookies from 'vue-cookies'
 import { sync } from 'vuex-router-sync'
 
 import { isProduction } from '~config'
@@ -21,6 +22,7 @@ export function createApp () {
 
   // set application logger
   Vue.use(logger, isProduction)
+  Vue.use(VueCookies)
 
   const app = new Vue({
     router,
