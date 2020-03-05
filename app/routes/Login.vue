@@ -66,6 +66,7 @@ export default {
           client: this.$http,
           payload: this.loginForm
         })
+        this.$router.push('Account')
       } catch (error) {
         console.log(error)
       }
