@@ -2,7 +2,6 @@ const r = (module.exports = require('express').Router())
 const async = require('async')
 const SteamApi = require('steamapi')
 const steam = new SteamApi(process.env.STEAM_API_KEY, { cache: true })
-// const auth = require('../middleware/auth')
 
 function getUserOwnedGames (id, req, res) {
   if (id) {
