@@ -9,11 +9,11 @@ passport.serializeUser(function (user, done) {
   if (!user) {
     done(null)
   }
-  done(null, user.id)
+  done(null, user)
 })
 
 passport.deserializeUser(function (user, done) {
-  User.findById(user.id, function (err, user) {
+  User.findById(user._id, function (err, user) {
     if (err) {
       return done(err, false)
     }

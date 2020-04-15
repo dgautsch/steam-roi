@@ -9,7 +9,8 @@ const { createBundleRenderer } = require('vue-server-renderer')
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
 const { passportStrategies } = require('./middleware')
-const { connectDb, connectDefaultDb } = require('./database')
+const mongoose = require('mongoose')
+const { connectDefaultDb } = require('./database')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const routes = require('./routes')
@@ -34,14 +35,6 @@ if (isProduction) {
   app.use(logger('dev'))
 }
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(cookieParser())
-
-// Register static asset routes
-app.use('/public/', express.static(path.join(__dirname, '../public')))
-app.use('/static/', express.static(path.join(__dirname, '../static')))
-
 // Database
 connectDefaultDb()
   .then(() => {
@@ -52,34 +45,34 @@ connectDefaultDb()
     throw new Error(err.message)
   })
 
-connectDb()
-  .then(connection => {
-    dblogger('Established sessions DB connection')
-    // Setup session storage of auth tokens
-    app.use(
-      session({
-        secret: process.env.SESSIONS_SECRET,
-        name: 'x-session-auth',
-        cookie: {
-          maxAge: 24 * 60 * 60 * 1000 // 24 Hours
-        },
-        resave: true,
-        saveUninitialized: true,
-        store: new MongoStore({
-          mongooseConnection: connection
-        })
-      })
-    )
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.json()) // for parsing application/json
+app.use(cookieParser())
+
+// Setup session storage of auth tokens
+app.use(
+  session({
+    secret: process.env.SESSIONS_SECRET,
+    name: 'x-session-auth',
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000 // 24 Hours
+    },
+    resave: true,
+    saveUninitialized: true,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    })
   })
-  .catch(err => {
-    dblogger(err)
-    throw new Error(err.message)
-  })
+)
 
 dblogger('Initializing Passport strategies')
 // Initialize sessions and passport strategies
 app.use(passportStrategies.initialize())
 app.use(passportStrategies.session())
+
+// Register static asset routes
+app.use('/public/', express.static(path.join(__dirname, '../public')))
+app.use('/static/', express.static(path.join(__dirname, '../static')))
 
 // Register Auth API routes
 app.use('/api/', routes)
