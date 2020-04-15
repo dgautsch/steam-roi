@@ -18,7 +18,7 @@ export function createApp () {
   sync(store, router)
 
   // set http client
-  Vue.prototype.$http = axios
+  Vue.prototype.$http = axios.create()
 
   // set application logger
   Vue.use(logger, isProduction)
