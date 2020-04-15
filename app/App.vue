@@ -56,12 +56,15 @@ export default {
   },
   async mounted () {
     this.$logger.log('App mounted')
-    const account = await this.$http.get('/api/account')
-    const { data } = account
-    this.$logger.log(data)
-    if (data.code === 'UNAUTHORIZED') {
-      this.$logger.log('Session expired, rerouting')
-      this.$router.push('Login')
+    try {
+      const { data } = await this.$http.get('/api/account')
+      this.$logger.log(data)
+    } catch (error) {
+      this.$logger.error(error)
+      if (error.code === 'UNAUTHORIZED') {
+        this.$logger.log('Session expired, rerouting')
+        this.$router.push('Login')
+      }
     }
   }
 }
