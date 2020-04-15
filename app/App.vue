@@ -23,7 +23,9 @@
       <el-main>
         <router-view />
       </el-main>
-      <el-footer class="sroi-footer"> Copyright {{ getYear }} </el-footer>
+      <el-footer class="sroi-footer">
+        Copyright {{ getYear }}
+      </el-footer>
     </el-container>
   </el-container>
 </template>
@@ -43,8 +45,24 @@ export default {
       return new Date().getFullYear()
     }
   },
-  mounted () {
+  async serverPrefetch () {
+    // const account = await this.$http.get('/api/account')
+    // const { data } = account
+    // this.$logger.log(data)
+    // if (data.code === 'UNAUTHORIZED') {
+    //   this.$logger.log('Session expired, rerouting')
+    //   this.$router.push('Login')
+    // }
+  },
+  async mounted () {
     this.$logger.log('App mounted')
+    const account = await this.$http.get('/api/account')
+    const { data } = account
+    this.$logger.log(data)
+    if (data.code === 'UNAUTHORIZED') {
+      this.$logger.log('Session expired, rerouting')
+      this.$router.push('Login')
+    }
   }
 }
 </script>

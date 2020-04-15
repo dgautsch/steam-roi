@@ -12,7 +12,6 @@ const { passportStrategies } = require('./middleware')
 const { connectDb, connectDefaultDb } = require('./database')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
-const passport = require('passport')
 const routes = require('./routes')
 const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
@@ -89,14 +88,12 @@ if (!disableDatabase) {
             })
           )
           dblogger('Initializing Passport strategies')
-          // Enable our Passport auth strategies
-          passportStrategies(passport)
           // Initialize sessions and passport strategies
-          app.use(passport.initialize())
-          app.use(passport.session())
+          app.use(passportStrategies.initialize())
+          app.use(passportStrategies.session())
 
           // Register Auth API routes
-          app.use('/api/', routes(passport))
+          app.use('/api/', routes)
         })
         .catch(err => {
           dblogger(err)

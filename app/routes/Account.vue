@@ -1,6 +1,12 @@
 <template>
   <el-container>
     <PageHeader :title="title" />
+    <button type="button" @click="getAccount">
+      Get Account Details
+    </button>
+    <pre>
+      {{ accountData }}
+    </pre>
   </el-container>
 </template>
 
@@ -17,7 +23,17 @@ export default {
   },
   data () {
     return {
-      title: 'Account'
+      title: 'Account',
+      accountData: {}
+    }
+  },
+  mounted () {
+    this.getAccount()
+  },
+  methods: {
+    async getAccount () {
+      const account = await this.$http.get('/api/account')
+      this.accountData = account
     }
   }
 }
