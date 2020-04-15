@@ -42,6 +42,48 @@ app.use(cookieParser())
 app.use('/public/', express.static(path.join(__dirname, '../public')))
 app.use('/static/', express.static(path.join(__dirname, '../static')))
 
+// Database
+connectDefaultDb()
+  .then(() => {
+    dblogger('Established default DB connection')
+  })
+  .catch(err => {
+    dblogger(err)
+    throw new Error(err.message)
+  })
+
+connectDb()
+  .then(connection => {
+    dblogger('Established sessions DB connection')
+    // Setup session storage of auth tokens
+    app.use(
+      session({
+        secret: process.env.SESSIONS_SECRET,
+        name: 'x-session-auth',
+        cookie: {
+          maxAge: 24 * 60 * 60 * 1000 // 24 Hours
+        },
+        resave: true,
+        saveUninitialized: true,
+        store: new MongoStore({
+          mongooseConnection: connection
+        })
+      })
+    )
+  })
+  .catch(err => {
+    dblogger(err)
+    throw new Error(err.message)
+  })
+
+dblogger('Initializing Passport strategies')
+// Initialize sessions and passport strategies
+app.use(passportStrategies.initialize())
+app.use(passportStrategies.session())
+
+// Register Auth API routes
+app.use('/api/', routes)
+
 // Send all other requests to Vue SSR
 app.get('*', ({ user, url }, res) => {
   const context = {
@@ -64,46 +106,5 @@ app.get('*', ({ user, url }, res) => {
     res.end(html)
   })
 })
-// Database
-if (!disableDatabase) {
-  connectDefaultDb()
-    .then(() => {
-      dblogger('Established default DB connection')
-      connectDb()
-        .then(connection => {
-          dblogger('Established sessions DB connection')
-          // Setup session storage of auth tokens
-          app.use(
-            session({
-              secret: process.env.SESSIONS_SECRET,
-              name: 'x-session-auth',
-              cookie: {
-                maxAge: 24 * 60 * 60 * 1000 // 24 Hours
-              },
-              resave: true,
-              saveUninitialized: true,
-              store: new MongoStore({
-                mongooseConnection: connection
-              })
-            })
-          )
-          dblogger('Initializing Passport strategies')
-          // Initialize sessions and passport strategies
-          app.use(passportStrategies.initialize())
-          app.use(passportStrategies.session())
-
-          // Register Auth API routes
-          app.use('/api/', routes)
-        })
-        .catch(err => {
-          dblogger(err)
-          throw new Error(err.message)
-        })
-    })
-    .catch(err => {
-      dblogger(err)
-      throw new Error(err.message)
-    })
-}
 
 module.exports = app
