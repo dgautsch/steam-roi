@@ -31,8 +31,11 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import NavLink from '~components/NavLink'
 import SiteNavigation from '~components/SiteNavigation'
+import { SET_AUTH_STATE } from '~store'
 
 export default {
   name: 'AppRoot',
@@ -45,25 +48,24 @@ export default {
       return new Date().getFullYear()
     }
   },
-  async serverPrefetch () {
-    // const account = await this.$http.get('/api/account')
-    // const { data } = account
-    // this.$logger.log(data)
-    // if (data.code === 'UNAUTHORIZED') {
-    //   this.$logger.log('Session expired, rerouting')
-    //   this.$router.push('Login')
-    // }
-  },
   async mounted () {
-    this.$logger.log('App mounted')
     try {
       const data = await this.$http.get('/api/account')
       this.$logger.log(data)
     } catch (error) {
-      this.$logger.error(error)
-      this.$logger.log('Session expired, rerouting')
-      this.$router.push('Login')
+      if (error.response &&
+        error.response.data.code === 'UNAUTHORIZED') {
+        this.$logger.warn('User Unauthorized, disabling registered features.')
+        this.setAuthState({ authState: false })
+      } else {
+        this.$logger.warn(error.message)
+      }
     }
+  },
+  methods: {
+    ...mapActions({
+      setAuthState: SET_AUTH_STATE
+    })
   }
 }
 </script>
