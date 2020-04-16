@@ -1,16 +1,18 @@
 <template>
   <el-container>
-    <PageHeader :title="title" />
-    <button type="button" @click="getAccount">
-      Get Account Details
-    </button>
-    <pre>
-      {{ accountData }}
-    </pre>
+    <el-header>
+      <el-container>
+        <PageHeader :title="title" />
+      </el-container>
+    </el-header>
+    <el-main>
+      <h2>Welcome to the site, {{ userName }}</h2>
+    </el-main>
   </el-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import PageHeader from '~components/PageHeader.vue'
 
 export default {
@@ -23,18 +25,13 @@ export default {
   },
   data () {
     return {
-      title: 'Account',
-      accountData: {}
+      title: 'Account'
     }
   },
-  mounted () {
-    this.getAccount()
-  },
-  methods: {
-    async getAccount () {
-      const account = await this.$http.get('/api/account')
-      this.accountData = account
-    }
+  computed: {
+    ...mapGetters([
+      'userName'
+    ])
   }
 }
 </script>

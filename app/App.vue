@@ -12,10 +12,15 @@
             </router-link>
           </h1>
         </el-col>
-        <el-col :span="8" class="sroi-logout">
+        <el-col v-if="!isAuthenticated" :span="8" class="sroi-logout">
           <NavLink to="/login" />
           /
           <NavLink to="/register" />
+        </el-col>
+        <el-col v-if="isAuthenticated" :span="8" class="sroi-logout">
+          <PageLink href="/api/logout">
+            Logout
+          </PageLink>
         </el-col>
       </el-row>
     </el-header>
@@ -31,19 +36,24 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 import NavLink from '~components/NavLink'
+import PageLink from '~components/PageLink'
 import SiteNavigation from '~components/SiteNavigation'
-import { SET_AUTH_STATE } from '~store'
+import { LOGIN_USER, SET_AUTH_STATE } from '~store'
 
 export default {
   name: 'AppRoot',
   components: {
     NavLink,
+    PageLink,
     SiteNavigation
   },
   computed: {
+    ...mapGetters([
+      'isAuthenticated'
+    ]),
     getYear () {
       return new Date().getFullYear()
     }
@@ -52,11 +62,12 @@ export default {
     try {
       const { data } = await this.$http.get('/api/account')
       this.$logger.log('User Authorized', data)
+      this.setAuthState({ user: data.userName, authState: true })
     } catch (error) {
       if (error.response &&
         error.response.data.code === 'UNAUTHORIZED') {
         this.$logger.warn('User Unauthorized, disabling registered features.')
-        this.setAuthState(false)
+        this.setAuthState({ user: null, authState: false })
       } else {
         this.$logger.warn(error.message)
       }
@@ -64,7 +75,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      setAuthState: SET_AUTH_STATE
+      setAuthState: SET_AUTH_STATE,
+      loginUser: LOGIN_USER
     })
   }
 }

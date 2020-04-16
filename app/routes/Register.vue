@@ -76,6 +76,7 @@ export default {
           client: this.$http,
           payload: this.registerForm
         })
+        this.$router.push('account')
       } catch (error) {
         console.log(error)
       }

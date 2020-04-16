@@ -17,7 +17,8 @@ r.post('/login', function (req, res, next) {
       res
         .status(200)
         .json({
-          code: info.message
+          code: info.message,
+          userName: user.username
         })
         .end()
     })
