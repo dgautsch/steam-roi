@@ -50,13 +50,13 @@ export default {
   },
   async mounted () {
     try {
-      const data = await this.$http.get('/api/account')
-      this.$logger.log(data)
+      const { data } = await this.$http.get('/api/account')
+      this.$logger.log('User Authorized', data)
     } catch (error) {
       if (error.response &&
         error.response.data.code === 'UNAUTHORIZED') {
         this.$logger.warn('User Unauthorized, disabling registered features.')
-        this.setAuthState({ authState: false })
+        this.setAuthState(false)
       } else {
         this.$logger.warn(error.message)
       }
