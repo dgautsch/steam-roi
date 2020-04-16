@@ -25,6 +25,9 @@
           <el-menu-item index="3">
             <NavLink to="/register" />
           </el-menu-item>
+          <el-menu-item index="4">
+            <NavLink to="/account" />
+          </el-menu-item>
         </el-menu>
       </template>
     </el-drawer>

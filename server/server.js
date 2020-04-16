@@ -5,14 +5,14 @@ const dblogger = require('debug')('steamroi:db')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const { createBundleRenderer } = require('vue-server-renderer')
+const mongoose = require('mongoose')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
 
 const app = express()
 const { isProduction, disableDatabase } = require('../config')
 const { passportStrategies } = require('./middleware')
-const { connectDb, connectDefaultDb } = require('./database')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
-const passport = require('passport')
+const { connectDefaultDb } = require('./database')
 const routes = require('./routes')
 const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
@@ -35,13 +35,47 @@ if (isProduction) {
   app.use(logger('dev'))
 }
 
-app.use(express.json()) // for parsing application/json
+// Database
+connectDefaultDb()
+  .then(() => {
+    dblogger('Established default DB connection')
+  })
+  .catch(err => {
+    dblogger(err)
+    throw new Error(err.message)
+  })
+
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.json()) // for parsing application/json
 app.use(cookieParser())
+
+// Setup session storage of auth tokens
+app.use(
+  session({
+    secret: process.env.SESSIONS_SECRET,
+    name: 'x-session-auth',
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000 // 24 Hours
+    },
+    resave: true,
+    saveUninitialized: true,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    })
+  })
+)
+
+dblogger('Initializing Passport strategies')
+// Initialize sessions and passport strategies
+app.use(passportStrategies.initialize())
+app.use(passportStrategies.session())
 
 // Register static asset routes
 app.use('/public/', express.static(path.join(__dirname, '../public')))
 app.use('/static/', express.static(path.join(__dirname, '../static')))
+
+// Register Auth API routes
+app.use('/api/', routes)
 
 // Send all other requests to Vue SSR
 app.get('*', ({ user, url }, res) => {
@@ -65,48 +99,5 @@ app.get('*', ({ user, url }, res) => {
     res.end(html)
   })
 })
-// Database
-if (!disableDatabase) {
-  connectDefaultDb()
-    .then(() => {
-      dblogger('Established default DB connection')
-      connectDb()
-        .then(connection => {
-          dblogger('Established sessions DB connection')
-          // Setup session storage of auth tokens
-          app.use(
-            session({
-              secret: process.env.SESSIONS_SECRET,
-              name: 'session-auth',
-              cookie: {
-                maxAge: 3600000
-              },
-              resave: true,
-              saveUninitialized: true,
-              store: new MongoStore({
-                mongooseConnection: connection
-              })
-            })
-          )
-          dblogger('Initializing Passport strategies')
-          // Enable our Passport auth strategies
-          passportStrategies(passport)
-          // Initialize sessions and passport strategies
-          app.use(passport.initialize())
-          app.use(passport.session())
-
-          // Register Auth API routes
-          app.use('/api/', routes(passport))
-        })
-        .catch(err => {
-          dblogger(err)
-          throw new Error(err.message)
-        })
-    })
-    .catch(err => {
-      dblogger(err)
-      throw new Error(err.message)
-    })
-}
 
 module.exports = app

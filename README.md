@@ -18,7 +18,7 @@ Eventually, when you login you will be able to see the games you own and how muc
 - [x] Implement Vue Router
 - [x] Address `connect.session() MemoryStore is not designed for a production environment, as it will leak`
 - [ ] Fix config so variables are shared server to client
-- [ ] Add auth middleware to secure private routes
+- [x] Add auth middleware to secure private routes
 - [ ] Add vue router auth meta to secure private routes
 - [ ] Create server process to scrape steam API for game data
 - [ ] Setup API route to get scraped games from app database

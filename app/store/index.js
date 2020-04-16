@@ -2,33 +2,50 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import config from '~config'
-import { registerUser } from '~app/api'
+import { loginUser, registerUser } from '~app/api'
 
 Vue.use(Vuex)
 
 // Mutations
-export const SET_USER = 'SET_USER'
+export const SET_USER_STATE = 'SET_USER_STATE'
 // Actions
 export const REGISTER_USER = 'REGISTER_USER'
+export const LOGIN_USER = 'LOGIN_USER'
+export const SET_AUTH_STATE = 'SET_AUTH_STATE'
 
 export function createStore () {
   return new Vuex.Store({
     strict: !config.isProduction,
     state: () => ({
-      user: undefined,
-      isAuthorized: false
+      isAuthenticated: false,
+      user: 'Guest User'
     }),
     mutations: {
-      [SET_USER] (state, user) {
+      [SET_USER_STATE] (state, { user, authState }) {
         state.user = user
+        state.isAuthenticated = authState
       }
     },
     actions: {
       async [REGISTER_USER] ({ commit }, { client, payload }) {
-        const user = await registerUser(client, payload)
-        commit(SET_USER, user)
+        const { data } = await registerUser(client, payload)
+        commit(SET_USER_STATE, { user: data.userName, authState: true })
+      },
+      async [LOGIN_USER] ({ commit }, { client, payload }) {
+        const { data } = await loginUser(client, payload)
+        await commit(SET_USER_STATE, { user: data.userName, authState: true })
+      },
+      async [SET_AUTH_STATE] ({ commit }, { user, authState }) {
+        await commit(SET_USER_STATE, { user, authState })
       }
     },
-    getters: {}
+    getters: {
+      isAuthenticated (state) {
+        return state.isAuthenticated === true
+      },
+      userName (state) {
+        return state.user
+      }
+    }
   })
 }
