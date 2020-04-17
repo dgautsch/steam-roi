@@ -19,6 +19,18 @@ dbUtils.connect = async () => {
   }
 
   await mongoose.connect(uri, mongooseOpts)
+
+  mongoose.connection.on('error', e => {
+    if (e.message.code === 'ETIMEDOUT') {
+      console.log(e)
+      mongoose.connect(uri, mongooseOpts)
+    }
+    console.log(e)
+  })
+
+  mongoose.connection.once('open', () => {
+    console.log(`MongoDB successfully connected to ${uri}`)
+  })
 }
 
 /**
