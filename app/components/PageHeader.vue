@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-page-header @back="goBack" title="Back">
+    <el-page-header title="Back" @back="goBack">
       <template v-slot:content>
         <h2>{{ title }}</h2>
       </template>
