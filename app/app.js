@@ -4,7 +4,7 @@ import VueCookies from 'vue-cookies'
 import { sync } from 'vuex-router-sync'
 
 import { isProduction } from '~config'
-import { createRouter } from './router'
+import { createRouter, routingGuards } from './router'
 import { createStore } from '~store'
 import ElementUI from '~plugins/element-ui'
 import logger from '~plugins/logger'
@@ -16,7 +16,7 @@ export function createApp () {
   const store = createStore()
 
   sync(store, router)
-
+  routingGuards(router, store)
   // set http client
   Vue.prototype.$http = axios.create()
 

@@ -7,11 +7,40 @@ Vue.use(VueMeta)
 
 const routes = {
   pages: {
-    home: '/',
-    account: '/account',
-    login: '/login',
-    register: '/register'
+    home: {
+      path: '/',
+      name: 'Home',
+      protected: false
+    },
+    account: {
+      path: '/account',
+      name: 'Account',
+      protected: true
+    },
+    login: {
+      path: '/login',
+      name: 'Login',
+      protected: false
+    },
+    register: {
+      path: '/register',
+      name: 'Register',
+      protected: false
+    }
   }
+}
+
+export function routingGuards (router, store) {
+  router.beforeEach((to, from, next) => {
+    if (
+      routes.pages[to.name.toLowerCase()].protected &&
+      !store.state.isAuthenticated
+    ) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
+  })
 }
 
 export function createRouter () {
@@ -20,7 +49,7 @@ export function createRouter () {
     routes: [
       {
         name: 'Home',
-        path: routes.pages.home,
+        path: routes.pages.home.path,
         component: () =>
           import(
             /* webpackChunkName: "home" */
@@ -29,7 +58,7 @@ export function createRouter () {
       },
       {
         name: 'Account',
-        path: routes.pages.account,
+        path: routes.pages.account.path,
         component: () =>
           import(
             /* webpackChunkName: "account" */
@@ -38,7 +67,7 @@ export function createRouter () {
       },
       {
         name: 'Login',
-        path: routes.pages.login,
+        path: routes.pages.login.path,
         component: () =>
           import(
             /* webpackChunkName: "login" */
@@ -47,7 +76,7 @@ export function createRouter () {
       },
       {
         name: 'Register',
-        path: routes.pages.register,
+        path: routes.pages.register.path,
         component: () =>
           import(
             /* webpackChunkName: "register" */
