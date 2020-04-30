@@ -5,51 +5,38 @@ import VueMeta from 'vue-meta'
 Vue.use(Router)
 Vue.use(VueMeta)
 
-const routes = {
+const routesMeta = {
   pages: {
     home: {
       path: '/',
       name: 'Home',
-      protected: false
+      requiresAuth: false
     },
     account: {
       path: '/account',
       name: 'Account',
-      protected: true
+      requiresAuth: true
     },
     login: {
       path: '/login',
       name: 'Login',
-      protected: false
+      requiresAuth: false
     },
     register: {
       path: '/register',
       name: 'Register',
-      protected: false
+      requiresAuth: false
     }
   }
 }
 
-export function routingGuards (router, store) {
-  router.beforeEach((to, from, next) => {
-    if (
-      routes.pages[to.name.toLowerCase()].protected &&
-      !store.state.isAuthenticated
-    ) {
-      next({ name: 'Login' })
-    } else {
-      next()
-    }
-  })
-}
-
-export function createRouter () {
-  return new Router({
+export function createRouter (store) {
+  const router = new Router({
     mode: 'history',
     routes: [
       {
         name: 'Home',
-        path: routes.pages.home.path,
+        path: routesMeta.pages.home.path,
         component: () =>
           import(
             /* webpackChunkName: "home" */
@@ -58,7 +45,7 @@ export function createRouter () {
       },
       {
         name: 'Account',
-        path: routes.pages.account.path,
+        path: routesMeta.pages.account.path,
         component: () =>
           import(
             /* webpackChunkName: "account" */
@@ -67,7 +54,7 @@ export function createRouter () {
       },
       {
         name: 'Login',
-        path: routes.pages.login.path,
+        path: routesMeta.pages.login.path,
         component: () =>
           import(
             /* webpackChunkName: "login" */
@@ -76,7 +63,7 @@ export function createRouter () {
       },
       {
         name: 'Register',
-        path: routes.pages.register.path,
+        path: routesMeta.pages.register.path,
         component: () =>
           import(
             /* webpackChunkName: "register" */
@@ -85,4 +72,17 @@ export function createRouter () {
       }
     ]
   })
+
+  router.beforeEach((to, from, next) => {
+    if (
+      routesMeta.pages[to.name.toLowerCase()].requiresAuth &&
+      !store.state.isAuthenticated
+    ) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
+  })
+
+  return router
 }
