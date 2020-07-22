@@ -1,5 +1,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const webpack = require('webpack')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const path = require('path')
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -51,6 +52,19 @@ const baseConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
+    new OptimizeCssAssetsPlugin({
+      cssProcessorPluginOptions: {
+        preset: [
+          'default',
+          {
+            discardComments: {
+              removeall: true
+            },
+            discardDuplicates: true
+          }
+        ]
+      }
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })

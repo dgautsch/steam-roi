@@ -19,7 +19,9 @@ import {
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
-
+// Element-UI custom theme will import duplicates https://github.com/vuejs/vue-cli/issues/5057
+// Will need to minify in production and strip out duplicates
+// import '~sass/_element-variables.scss'
 export default {
   install: function (Vue) {
     locale.use(lang)
