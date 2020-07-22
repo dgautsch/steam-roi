@@ -12,8 +12,8 @@ import logger from '~plugins/logger'
 import App from './App.vue'
 
 export function createApp () {
-  const router = createRouter()
   const store = createStore()
+  const router = createRouter(store)
 
   sync(store, router)
 
@@ -22,15 +22,16 @@ export function createApp () {
 
   // set application logger
   Vue.use(logger, isProduction)
+
+  // plugins
   Vue.use(VueCookies)
+  Vue.use(ElementUI)
 
   const app = new Vue({
     router,
     store,
     render: h => h(App)
   })
-
-  ElementUI()
 
   return { app, router, store }
 }

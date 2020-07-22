@@ -5,22 +5,38 @@ import VueMeta from 'vue-meta'
 Vue.use(Router)
 Vue.use(VueMeta)
 
-const routes = {
+const routesMeta = {
   pages: {
-    home: '/',
-    account: '/account',
-    login: '/login',
-    register: '/register'
+    home: {
+      path: '/',
+      name: 'Home',
+      requiresAuth: false
+    },
+    account: {
+      path: '/account',
+      name: 'Account',
+      requiresAuth: true
+    },
+    login: {
+      path: '/login',
+      name: 'Login',
+      requiresAuth: false
+    },
+    register: {
+      path: '/register',
+      name: 'Register',
+      requiresAuth: false
+    }
   }
 }
 
-export function createRouter () {
-  return new Router({
+export function createRouter (store) {
+  const router = new Router({
     mode: 'history',
     routes: [
       {
         name: 'Home',
-        path: routes.pages.home,
+        path: routesMeta.pages.home.path,
         component: () =>
           import(
             /* webpackChunkName: "home" */
@@ -29,7 +45,7 @@ export function createRouter () {
       },
       {
         name: 'Account',
-        path: routes.pages.account,
+        path: routesMeta.pages.account.path,
         component: () =>
           import(
             /* webpackChunkName: "account" */
@@ -38,7 +54,7 @@ export function createRouter () {
       },
       {
         name: 'Login',
-        path: routes.pages.login,
+        path: routesMeta.pages.login.path,
         component: () =>
           import(
             /* webpackChunkName: "login" */
@@ -47,7 +63,7 @@ export function createRouter () {
       },
       {
         name: 'Register',
-        path: routes.pages.register,
+        path: routesMeta.pages.register.path,
         component: () =>
           import(
             /* webpackChunkName: "register" */
@@ -56,4 +72,17 @@ export function createRouter () {
       }
     ]
   })
+
+  router.beforeEach((to, from, next) => {
+    if (
+      routesMeta.pages[to.name.toLowerCase()].requiresAuth &&
+      !store.state.isAuthenticated
+    ) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
+  })
+
+  return router
 }
