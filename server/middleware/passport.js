@@ -40,66 +40,64 @@ passport.use(
 
 // Local Register Strategy
 passport.use(
-  'local-register',
+  'local',
   new LocalStrategy(
     {
       usernameField: 'email',
-      passwordField: 'password'
+      passwordField: 'password',
+      passReqToCallback: true
     },
-    function (email, password, done) {
-      let newUser
-
-      User.findOne({ username: email }, function (err, user) {
-        if (err) return done(err)
-        if (user) {
-          dblogger(`User ${user.id} exists, cancelling account creation.`)
-          return done(null, false, { message: 'USER_EXISTS' })
-        } else {
-          // create a new user
-          newUser = new User({
-            username: email,
-            password
-          })
-
-          newUser
-            .save()
-            .then(u => {
-              return done(null, u, { message: 'USER_CREATED' })
+    function (req, email, password, done) {
+      function handleUserAuth () {
+        User.findOne({ username: email }, function (err, user) {
+          let newUser
+          if (err) return done(err)
+          if (user) {
+            dblogger(`User ${user.id} exists, attempting login.`)
+            return loginUser()
+          } else {
+            // create a new user
+            newUser = new User({
+              username: email,
+              password
             })
-            .catch(error => {
-              return done(error)
-            })
-        }
-      })
-    }
-  )
-)
 
-passport.use(
-  'local-login',
-  new LocalStrategy(
-    {
-      usernameField: 'email',
-      passwordField: 'password'
-    },
-    function (email, password, done) {
-      User.findOne({ username: email }, function (err, user) {
-        if (err) return done(err)
+            newUser
+              .save()
+              .then(u => {
+                return done(null, u, { message: 'USER_CREATED' })
+              })
+              .catch(error => {
+                return done(error)
+              })
+          }
+        })
+      }
 
-        // no user was found
-        if (!user) {
-          return done(null, false, { message: 'USER_NOT_FOUND' })
-        }
+      function loginUser () {
+        return User.findOne({ username: email }, async function (err, user) {
+          if (err) return done(err)
 
-        // verify password matches
-        if (!user.verifyPassword(password)) {
-          return done(null, false, { message: 'INVALID_PASSWORD' })
-        }
+          // no user was found
+          if (!user) {
+            return done(null, false, { message: 'USER_NOT_FOUND' })
+          }
 
-        // return authenticaterd user
-        dblogger(`Logging in ${user}`)
-        return done(null, user, { message: 'USER_AUTHENTICATED' })
-      })
+          // verify password matches
+          const passwordValid = await user.verifyPassword(password)
+          if (!passwordValid) {
+            return done(null, false, { message: 'INVALID_PASSWORD' })
+          }
+
+          // return authenticaterd user
+          dblogger(`Logging in ${user}`)
+          return done(null, user, { message: 'USER_AUTHENTICATED' })
+        })
+      }
+
+      if (!req.user) {
+        handleUserAuth()
+      }
     }
   )
 )
