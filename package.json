@@ -53,7 +53,7 @@
     "axios": "0.19.2",
     "babel-loader": "8.0.6",
     "babel-plugin-component": "1.1.1",
-    "bcrypt": "3.0.7",
+    "bcrypt": "5.0.0",
     "connect-mongo": "3.2.0",
     "cookie-parser": "1.4.3",
     "cross-env": "6.0.3",
