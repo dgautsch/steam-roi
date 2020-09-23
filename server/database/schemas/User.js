@@ -38,12 +38,7 @@ UserSchema.pre('save', function () {
 })
 
 UserSchema.methods.verifyPassword = function (candidatePassword) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-      if (err) return reject(err)
-      resolve(isMatch)
-    })
-  })
+  return bcrypt.compare(candidatePassword, this.password)
 }
 
 module.exports = mongoose.model('User', UserSchema)

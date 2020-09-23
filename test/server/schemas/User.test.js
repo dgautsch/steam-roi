@@ -85,25 +85,15 @@ describe('User', () => {
 
   describe('verifyPassword', () => {
     it('should match passwords', async () => {
-      testUser.verifyPassword('testpassword', (err, isMatch) => {
-        expect(isMatch).toBeTruthy()
-      })
+      await expect(
+        testUser.verifyPassword('testpassword')
+      ).resolves.toBeTruthy()
     })
 
     it('should reject unmatched passwords', async () => {
-      testUser.verifyPassword('testpassword2', (err, isMatch) => {
-        expect(isMatch).toBeFalsy()
-      })
-    })
-
-    it('should return an error on validation fail', async () => {
-      jest.spyOn(bcrypt, 'compare').mockImplementation((pw, pw2, cb) => {
-        cb(new Error('error'))
-      })
-      await expect(testUser.verifyPassword('testpassword2')).rejects.toEqual(
-        new Error('error')
-      )
-      bcrypt.compare.mockRestore()
+      await expect(
+        testUser.verifyPassword('testpassword2')
+      ).resolves.toBeFalsy()
     })
   })
 })
