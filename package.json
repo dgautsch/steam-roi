@@ -24,7 +24,7 @@
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk=0.0.0.0 ./node_modules/jest/.bin/jest --runInBand --collectCoverage false",
     "test:debug:win": "cross-env NODE_ENV=test node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --runInBand --collectCoverage false",
     "test:watch": "npm run test -- --watch --collectCoverage false",
-    "watch": "run-p watch:client watch:server",
+    "watch": "npm run build:dev:client && run-p watch:client watch:server",
     "watch:client": "cross-env NODE_ENV=development webpack-dev-server --config webpack/webpack.client.js",
     "watch:server": "cross-env NODE_ENV=development webpack -w --config webpack/webpack.server.js"
   },
