@@ -44,7 +44,7 @@ export function createStore () {
         return state.isAuthenticated === true
       },
       userName (state) {
-        return state.user
+        return state.user.username
       }
     }
   })

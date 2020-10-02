@@ -1,5 +1,6 @@
 import { createApp } from './app'
 import config from '~config'
+import _ from 'lodash'
 
 // Receives the context of the render call, returning a Promise resolution to the root Vue instance.
 export default context =>
@@ -13,8 +14,25 @@ export default context =>
     // wait until router has resolved possible async components and hooks
     router.onReady(() => {
       context.rendered = () => {
-        // Grab the user from the context and store in the store
-        store.state.user = context.user
+        const matchedComponents = router.getMatchedComponents()
+        // no matched routes, reject with 404
+        if (!matchedComponents.length) {
+          return reject(new Error(404))
+        }
+
+        // Set auth status
+        if (_.get(context, 'user.id')) {
+          // A user object will be passed down if it exists on the request
+          // object from passport. We know the user is authenticated if this
+          // document is present.
+          store.state.user = {
+            id: context.user.id,
+            username: context.user.username
+          }
+          store.state.isAuthenticated = true
+        } else {
+          store.state.isAuthenticated = false
+        }
         // store build time config
         store.state.config = config
 
@@ -24,12 +42,6 @@ export default context =>
         // is used for the renderer, the state will automatically be
         // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
         context.state = store.state
-      }
-
-      const matchedComponents = router.getMatchedComponents()
-      // no matched routes, reject with 404
-      if (!matchedComponents.length) {
-        return reject(new Error(404))
       }
 
       // the Promise should resolve to the app instance so it can be rendered

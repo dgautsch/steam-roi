@@ -28,7 +28,7 @@ const bundleRenderer = createBundleRenderer(serverBundle, {
   clientManifest
 })
 
-// Logger
+// Loggers
 if (isProduction) {
   app.use(logger('combined'))
 } else {

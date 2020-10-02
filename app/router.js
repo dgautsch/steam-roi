@@ -73,15 +73,18 @@ export function createRouter (store) {
     ]
   })
 
-  router.beforeEach((to, from, next) => {
-    if (
-      routesMeta.pages[to.name.toLowerCase()].requiresAuth &&
-      !store.state.isAuthenticated
-    ) {
-      next({ name: 'Login' })
-    } else {
-      next()
-    }
+  router.onReady(() => {
+    router.beforeResolve((to, from, next) => {
+      if (
+        to.name &&
+        routesMeta.pages[to.name.toLowerCase()].requiresAuth &&
+        !store.state.isAuthenticated
+      ) {
+        next({ name: 'Login' })
+      } else {
+        next()
+      }
+    })
   })
 
   return router
