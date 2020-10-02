@@ -58,26 +58,32 @@ export default {
       return new Date().getFullYear()
     }
   },
-  async mounted () {
-    try {
-      const { data } = await this.$http.get('/api/account')
-      this.$logger.log('User Authorized', data)
-      this.setAuthState({ user: data.userName, authState: true })
-    } catch (error) {
-      if (error.response &&
-        error.response.data.code === 'UNAUTHORIZED') {
-        this.$logger.warn('User Unauthorized, disabling registered features.')
-        this.setAuthState({ user: null, authState: false })
-      } else {
-        this.$logger.warn(error.message)
-      }
+  mounted () {
+    if (!this.isAuthenticated) {
+      this.$logger.log('Checking authentication status.')
+      this.checkAuthenticationStatus()
     }
   },
   methods: {
     ...mapActions({
       setAuthState: SET_AUTH_STATE,
       loginUser: LOGIN_USER
-    })
+    }),
+    async checkAuthenticationStatus () {
+      try {
+        const { data } = await this.$http.get('/api/account')
+        this.$logger.log('User Authorized', data)
+        return this.setAuthState({ user: data.userName, authState: true })
+      } catch (error) {
+        if (error.response &&
+          error.response.data.code === 'UNAUTHORIZED') {
+          this.$logger.warn('User Unauthorized, disabling registered features.')
+          return this.setAuthState({ user: null, authState: false })
+        } else {
+          this.$logger.warn('Could not check auth status:', error.message)
+        }
+      }
+    }
   }
 }
 </script>

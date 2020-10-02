@@ -1,4 +1,4 @@
-const dblogger = require('debug')('steamroi:passport')
+const logger = require('debug')('steamroi:passport')
 const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
 const LocalStrategy = require('passport-local').Strategy
@@ -50,27 +50,15 @@ passport.use(
     function (req, email, password, done) {
       function handleUserAuth () {
         User.findOne({ username: email }, function (err, user) {
-          let newUser
           if (err) return done(err)
           if (user) {
-            dblogger(`User ${user.id} exists, attempting login.`)
+            logger(`User ${user.id} exists, attempting login.`)
             return loginUser()
-          } else {
-            // create a new user
-            newUser = new User({
-              username: email,
-              password
-            })
-
-            newUser
-              .save()
-              .then(u => {
-                return done(null, u, { message: 'USER_CREATED' })
-              })
-              .catch(error => {
-                return done(error)
-              })
+          } else if (req.path === '/register') {
+            logger('New account, attempting creation.')
+            return createUser()
           }
+          return done(null, false, { message: 'USER_NOT_FOUND' })
         })
       }
 
@@ -90,9 +78,27 @@ passport.use(
           }
 
           // return authenticaterd user
-          dblogger(`Logging in ${user}`)
+          logger(`Logging in ${user.username}`)
           return done(null, user, { message: 'USER_AUTHENTICATED' })
         })
+      }
+
+      function createUser () {
+        // create a new user
+        const newUser = new User({
+          username: email,
+          password
+        })
+
+        newUser
+          .save()
+          .then(user => {
+            logger(`User created ${user.username}`)
+            return done(null, user, { message: 'USER_CREATED' })
+          })
+          .catch(error => {
+            return done(error)
+          })
       }
 
       if (!req.user) {

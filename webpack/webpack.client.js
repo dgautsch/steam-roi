@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 const path = require('path')
-const webpack = require('webpack')
 const merge = require('webpack-merge')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
@@ -53,14 +52,14 @@ if (!isProduction) {
       contentBase: path.resolve(__dirname, '../public'),
       publicPath: 'http://localhost:8080/public/',
       hot: true,
-      inline: true,
+      noInfo: true,
       overlay: true,
       historyApiFallback: true,
+      liveReload: false,
       headers: {
         'Access-Control-Allow-Origin': '*'
       }
-    },
-    plugins: [new webpack.HotModuleReplacementPlugin()]
+    }
   })
 }
 
