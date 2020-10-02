@@ -30,13 +30,15 @@ const serverConfig = {
       ? [
           new NodemonPlugin({
             watch: [
-              path.resolve(__dirname, '../server/**/*'),
-              path.resolve(__dirname, '../app/templates/**/*'),
+              path.resolve(__dirname, '../server/**/*.js'),
+              path.resolve(__dirname, '../app/templates/**/*.html'),
+              path.resolve(__dirname, '../app/sass/**/*.scss'),
+              path.resolve(__dirname, '../app/**/*.vue'),
               path.resolve(__dirname, '../public/vue-ssr-bundle.json')
             ],
             verbose: true,
-            script: path.join(__dirname, '../server/index.js'),
-            ext: 'js,json'
+            script: path.resolve(__dirname, '../server/index.js'),
+            ext: 'js,json,scss,vue,html'
           })
         ]
       : [])

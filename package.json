@@ -103,7 +103,7 @@
     "eslint-plugin-vue": "6.1.2",
     "modern-node": "2.7.0",
     "mongodb-memory-server": "6.1.1",
-    "nodemon-webpack-plugin": "4.2.1",
+    "nodemon-webpack-plugin": "4.3.2",
     "regenerator-runtime": "0.13.3",
     "standard": "14.3.3",
     "vue-eslint-parser": "7.0.0",
