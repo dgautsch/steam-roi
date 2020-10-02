@@ -107,7 +107,6 @@
     "regenerator-runtime": "0.13.3",
     "standard": "14.3.3",
     "vue-eslint-parser": "7.0.0",
-    "vue-hot-reload-api": "2.3.4",
     "vue-jest": "3.0.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0"
