@@ -5,85 +5,70 @@ import VueMeta from 'vue-meta'
 Vue.use(Router)
 Vue.use(VueMeta)
 
-const routesMeta = {
-  pages: {
-    home: {
-      path: '/',
-      name: 'Home',
-      requiresAuth: false
-    },
-    account: {
-      path: '/account',
-      name: 'Account',
-      requiresAuth: true
-    },
-    login: {
-      path: '/login',
-      name: 'Login',
-      requiresAuth: false
-    },
-    register: {
-      path: '/register',
-      name: 'Register',
-      requiresAuth: false
-    }
+export const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    requiresAuth: false,
+    guestOnly: false,
+    component: () =>
+      import(
+        /* webpackChunkName: "home" */
+        '~routes/Home.vue'
+      )
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    requiresAuth: true,
+    guestOnly: false,
+    component: () =>
+      import(
+        /* webpackChunkName: "account" */
+        '~routes/Account.vue'
+      )
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    requiresAuth: false,
+    guestOnly: true,
+    component: () =>
+      import(
+        /* webpackChunkName: "login" */
+        '~routes/Login.vue'
+      )
+  },
+  {
+    name: 'Register',
+    path: '/register',
+    requiresAuth: false,
+    guestOnly: true,
+    component: () =>
+      import(
+        /* webpackChunkName: "register" */
+        '~routes/Register.vue'
+      )
   }
-}
+]
 
 export function createRouter (store) {
   const router = new Router({
     mode: 'history',
-    routes: [
-      {
-        name: 'Home',
-        path: routesMeta.pages.home.path,
-        component: () =>
-          import(
-            /* webpackChunkName: "home" */
-            '~routes/Home.vue'
-          )
-      },
-      {
-        name: 'Account',
-        path: routesMeta.pages.account.path,
-        component: () =>
-          import(
-            /* webpackChunkName: "account" */
-            '~routes/Account.vue'
-          )
-      },
-      {
-        name: 'Login',
-        path: routesMeta.pages.login.path,
-        component: () =>
-          import(
-            /* webpackChunkName: "login" */
-            '~routes/Login.vue'
-          )
-      },
-      {
-        name: 'Register',
-        path: routesMeta.pages.register.path,
-        component: () =>
-          import(
-            /* webpackChunkName: "register" */
-            '~routes/Register.vue'
-          )
-      }
-    ]
+    routes
   })
 
   router.onReady(() => {
+    const isAuthenticated = store.state.isAuthenticated
     router.beforeResolve((to, from, next) => {
-      if (
-        to.name &&
-        routesMeta.pages[to.name.toLowerCase()].requiresAuth &&
-        !store.state.isAuthenticated
-      ) {
-        next({ name: 'Login' })
-      } else {
-        next()
+      const destination = routes.find(route => route.name === to.name)
+      if (to.name && destination.requiresAuth && !isAuthenticated) {
+        return next({ name: 'Login' })
       }
+      if (isAuthenticated && destination.guestOnly) {
+        return next({ name: from.name ? from.name : routes.pages.home.name })
+      }
+      next()
     })
   })
 

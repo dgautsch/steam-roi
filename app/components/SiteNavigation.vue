@@ -16,17 +16,11 @@
           class="sroi-menu"
           @select="handleSelect"
         >
-          <el-menu-item index="1">
-            <NavLink to="/" />
-          </el-menu-item>
-          <el-menu-item index="2">
-            <NavLink to="/login" />
-          </el-menu-item>
-          <el-menu-item index="3">
-            <NavLink to="/register" />
-          </el-menu-item>
-          <el-menu-item index="4">
-            <NavLink to="/account" />
+          <el-menu-item
+            v-for="(route, index) in availableRoutes"
+            :key="index"
+            index="index">
+              <NavLink :to="route.path" />
           </el-menu-item>
         </el-menu>
       </template>
@@ -35,7 +29,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import NavLink from '~components/NavLink'
+import { routes } from '../router'
 
 export default {
   name: 'SiteNavigation',
@@ -46,6 +43,17 @@ export default {
     return {
       activeIndex: this.$router.activeIndex,
       drawerOpen: false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'isAuthenticated'
+    ]),
+    availableRoutes () {
+      const isAuthenticated = this.isAuthenticated
+      return routes.filter((route) => {
+        return route.requiresAuth === isAuthenticated || route.guestOnly !== isAuthenticated
+      })
     }
   },
   methods: {
