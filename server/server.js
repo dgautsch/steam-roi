@@ -1,7 +1,7 @@
 const express = require('express')
 const fs = require('fs')
-const logger = require('morgan')
-const dblogger = require('debug')('steamroi:db')
+const terminalLogger = require('morgan')
+const logger = require('debug')('steamroi:server')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const { createBundleRenderer } = require('vue-server-renderer')
@@ -28,20 +28,18 @@ const bundleRenderer = createBundleRenderer(serverBundle, {
   clientManifest
 })
 
-// Loggers
-if (isProduction) {
-  app.use(logger('combined'))
-} else {
-  app.use(logger('dev'))
-}
+// Terminal Loggers
+isProduction
+  ? app.use(terminalLogger('combined'))
+  : app.use(terminalLogger('dev'))
 
 // Database
 connectDefaultDb()
   .then(() => {
-    dblogger('Established default DB connection')
+    logger('Established default DB connection')
   })
   .catch(err => {
-    dblogger(err)
+    logger(err)
     throw new Error(err.message)
   })
 
@@ -65,19 +63,22 @@ app.use(
   })
 )
 
-dblogger('Initializing Passport strategies')
+logger('Initializing Passport strategies')
 // Initialize sessions and passport strategies
 app.use(passportStrategies.initialize())
 app.use(passportStrategies.session())
 
 // Register static asset routes
+logger('Register static routes')
 app.use('/public/', express.static(path.join(__dirname, '../public')))
 app.use('/static/', express.static(path.join(__dirname, '../static')))
 
 // Register Auth API routes
+logger('Register API routes')
 app.use('/api/', routes)
 
 // Send all other requests to Vue SSR
+logger('Register SSR routes')
 app.get('*', ({ user, url }, res) => {
   const context = {
     title: 'Steam ROI',
@@ -89,10 +90,10 @@ app.get('*', ({ user, url }, res) => {
 
   bundleRenderer.renderToString(context, (err, html) => {
     if (err) {
+      logger('SSR Rendering Error: ', err)
       if (+err.message === 404) {
         res.status(404).end('Page not found')
       } else {
-        dblogger(err)
         res.status(500).end('Internal Server Error')
       }
     }
