@@ -103,6 +103,10 @@ passport.use(
 
       if (!req.user) {
         handleUserAuth()
+      } else {
+        // User is already authenticated
+        logger(`User ${req.user.id} already authenticated.`)
+        done(null, req.user, { message: 'USER_AUTHENTICATED' })
       }
     }
   )

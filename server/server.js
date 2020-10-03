@@ -14,6 +14,7 @@ const { isProduction, disableDatabase } = require('../config')
 const { passportStrategies } = require('./middleware')
 const { connectDefaultDb } = require('./database')
 const routes = require('./routes')
+const apiRoutes = require('./routes/api')
 const serverBundle = require('../public/vue-ssr-server-bundle.json')
 const clientManifest = require('../public/vue-ssr-client-manifest.json')
 const template = fs.readFileSync(
@@ -64,18 +65,18 @@ app.use(
 )
 
 logger('Initializing Passport strategies')
-// Initialize sessions and passport strategies
 app.use(passportStrategies.initialize())
 app.use(passportStrategies.session())
 
-// Register static asset routes
 logger('Register static routes')
 app.use('/public/', express.static(path.join(__dirname, '../public')))
 app.use('/static/', express.static(path.join(__dirname, '../static')))
 
-// Register Auth API routes
 logger('Register API routes')
-app.use('/api/', routes)
+app.use('/api/', apiRoutes)
+
+logger('Register general routes')
+app.use('/', routes)
 
 // Send all other requests to Vue SSR
 logger('Register SSR routes')

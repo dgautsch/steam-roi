@@ -1,5 +1,5 @@
 const r = (module.exports = require('express').Router())
-const passport = require('../middleware/passport')
+const passport = require('passport')
 
 r.post('/login', function (req, res, next) {
   passport.authenticate('local', (err, user, info) => {

@@ -4,12 +4,10 @@
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function isAuthenticated (req, res, next) {
-  if (!req.isAuthenticated()) {
-    res.status(401).json({
-      code: 'UNAUTHORIZED'
-    })
-  } else {
+  if (req.isAuthenticated()) {
     return next()
   }
+
+  res.redirect('/')
 }
 module.exports = isAuthenticated
