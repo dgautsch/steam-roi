@@ -14,7 +14,8 @@ r.post('/login', function (req, res, next) {
       if (e) return next(e)
       res.status(200).json({
         code: info.message,
-        userName: user.username
+        userName: user.username,
+        id: user.id
       })
     })
     return next()

@@ -16,7 +16,8 @@ r.post('/register', function (req, res, next) {
       if (e) return next(e)
       res.status(201).json({
         code: info.message,
-        userName: user.username
+        userName: user.username,
+        id: user.id
       })
     })
     return next()

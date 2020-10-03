@@ -29,8 +29,12 @@ export default context =>
             id: context.user.id,
             username: context.user.username
           }
+          app.$logger.log(
+            `User Authorized, enabled registered features for ${context.user.username}`
+          )
           store.state.isAuthenticated = true
         } else {
+          app.$logger.log('User Unauthorized, disabling registered features.')
           store.state.isAuthenticated = false
         }
         // store build time config

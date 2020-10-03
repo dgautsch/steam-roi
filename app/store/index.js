@@ -18,22 +18,34 @@ export function createStore () {
     strict: !config.isProduction,
     state: () => ({
       isAuthenticated: false,
-      user: 'Guest User'
+      user: {
+        username: 'Guest User',
+        id: null
+      }
     }),
     mutations: {
-      [SET_USER_STATE] (state, { user, authState }) {
-        state.user = user
+      [SET_USER_STATE] (state, { user, id, authState }) {
+        state.user.username = user
+        state.user.id = id
         state.isAuthenticated = authState
       }
     },
     actions: {
       async [REGISTER_USER] ({ commit }, { client, payload }) {
         const { data } = await registerUser(client, payload)
-        commit(SET_USER_STATE, { user: data.userName, authState: true })
+        commit(SET_USER_STATE, {
+          user: data.userName,
+          id: data.id,
+          authState: true
+        })
       },
       async [LOGIN_USER] ({ commit }, { client, payload }) {
         const { data } = await loginUser(client, payload)
-        await commit(SET_USER_STATE, { user: data.userName, authState: true })
+        await commit(SET_USER_STATE, {
+          user: data.userName,
+          id: data.id,
+          authState: true
+        })
       },
       async [SET_AUTH_STATE] ({ commit }, { user, authState }) {
         await commit(SET_USER_STATE, { user, authState })
