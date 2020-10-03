@@ -36,12 +36,11 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import NavLink from '~components/NavLink'
 import PageLink from '~components/PageLink'
 import SiteNavigation from '~components/SiteNavigation'
-import { LOGIN_USER, SET_AUTH_STATE } from '~store'
 
 export default {
   name: 'AppRoot',
@@ -56,33 +55,6 @@ export default {
     ]),
     getYear () {
       return new Date().getFullYear()
-    }
-  },
-  mounted () {
-    if (!this.isAuthenticated) {
-      this.$logger.log('Checking authentication status.')
-      this.checkAuthenticationStatus()
-    }
-  },
-  methods: {
-    ...mapActions({
-      setAuthState: SET_AUTH_STATE,
-      loginUser: LOGIN_USER
-    }),
-    async checkAuthenticationStatus () {
-      try {
-        const { data } = await this.$http.get('/api/account')
-        this.$logger.log('User Authorized', data)
-        return this.setAuthState({ user: data.userName, authState: true })
-      } catch (error) {
-        if (error.response &&
-          error.response.data.code === 'UNAUTHORIZED') {
-          this.$logger.warn('User Unauthorized, disabling registered features.')
-          return this.setAuthState({ user: null, authState: false })
-        } else {
-          this.$logger.warn('Could not check auth status:', error.message)
-        }
-      }
     }
   }
 }
