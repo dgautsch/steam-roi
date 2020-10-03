@@ -1,0 +1,6 @@
+MONGO_URL=mongodb+srv://foo
+REALM=http://localhost:3000
+RETURN_URL=http://localhost:3000/api/auth/steam/return
+STEAM_API_KEY=FOO
+DEBUG=steamroi:*
+SESSIONS_SECRET=somethingsecret!
