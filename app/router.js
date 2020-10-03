@@ -59,8 +59,8 @@ export function createRouter (store) {
   })
 
   router.onReady(() => {
-    const isAuthenticated = store.state.isAuthenticated
     router.beforeResolve((to, from, next) => {
+      const isAuthenticated = store.getters.isAuthenticated
       const destination = routes.find(route => route.name === to.name)
       if (to.name && destination.requiresAuth && !isAuthenticated) {
         return next({ name: 'Login' })
