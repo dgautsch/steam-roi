@@ -49,6 +49,17 @@ export const routes = [
         /* webpackChunkName: "register" */
         '~routes/Register.vue'
       )
+  },
+  {
+    name: 'Not Found',
+    path: '*',
+    requiresAuth: false,
+    guestOnly: false,
+    component: () =>
+      import(
+        /* webpackChunkName: "register" */
+        '~routes/NotFound.vue'
+      )
   }
 ]
 
