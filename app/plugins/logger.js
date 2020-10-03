@@ -2,11 +2,11 @@ import debug from 'debug'
 // https://github.com/visionmedia/debug#readme
 export default {
   install: function (Vue, isProduction) {
-    const dbg = debug('steamroi:debug')
-    const error = debug('steamroi:error')
-    const info = debug('steamroi:info')
-    const log = debug('steamroi:log')
-    const warn = debug('steamroi:warn')
+    const dbg = debug('steamroi:app:debug')
+    const error = debug('steamroi:app:error')
+    const info = debug('steamroi:app:info')
+    const log = debug('steamroi:app:log')
+    const warn = debug('steamroi:app:warn')
     dbg.log = console.debug.bind(console)
     error.log = console.error.bind(console)
     info.log = console.info.bind(console)
