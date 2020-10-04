@@ -1,8 +1,8 @@
 // Support async/await
 require('regenerator-runtime/runtime')
 const path = require('path')
-const logger = require('debug')('steamroi:utils')
 require('dotenv').config({ path: path.join(__dirname, '../../../config/.env') })
+const logger = require('debug')('steamroi:utils')
 
 const SteamWrapper = require('steamapi')
 const SteamAPI = new SteamWrapper(process.env.STEAM_API_KEY)
@@ -15,8 +15,8 @@ const SteamUtils = (module.exports = {})
 
 /**
  * Retrieves all apps from the Steam API
- * @function getAllSteamGames
- * @return {Promise<Object>} A collection of Steam Games
+ * @function SteamUtils#getAllSteamGames
+ * @return {Promise<Object>} A collection of Steam apps
  */
 SteamUtils.getAllSteamGames = async function () {
   try {
@@ -29,6 +29,11 @@ SteamUtils.getAllSteamGames = async function () {
   }
 }
 
+/**
+ * Fetches app details from the Steam API
+ * @function SteamUtils#getAppDetails
+ * @return {Promise<Object>} The details of the Steam app
+ */
 SteamUtils.getAppDetails = async function (id) {
   try {
     const appDetails = await SteamAPI.getGameDetails(id)
@@ -40,9 +45,9 @@ SteamUtils.getAppDetails = async function (id) {
 }
 
 /**
- * Adds a game to the MongoDB
- * @function addGame
- * @return {null}
+ * Adds a game to the MongoDB collection
+ * @function SteamUtils#addGame
+ * @return {Promise<Object>}
  */
 SteamUtils.addGame = async function (id) {
   logger(`Adding game ${id}`)
@@ -56,10 +61,3 @@ SteamUtils.addGame = async function (id) {
     logger(`Save failed with error: ${error}`)
   }
 }
-
-/**
- * Removes a game from the MongoDB
- * @function addGame
- * @return {null}
- */
-SteamUtils.removeGame = function () {}

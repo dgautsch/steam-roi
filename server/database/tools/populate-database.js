@@ -22,14 +22,14 @@ async function populateDatabase () {
    * @todo convert this to a while loop and add in a setTimeout for 5 minutes
    * after every 200 records that have been parsed.
    * The Steam API will cancel requests if there are more than 200 every 5 minutes
-   *
    */
-  for (let i = 20; i < 60; i++) {
+  for (let i = 60; i < 100; i++) {
     const game = games[i]
     if (game && game.appid) {
       await SteamUtils.addGame(game.appid)
     }
   }
+  logger('Closing default DB connection')
   mongoose.connection.close()
 }
 
