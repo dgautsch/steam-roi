@@ -15,7 +15,7 @@ const SteamUtils = (module.exports = {})
 
 /**
  * Retrieves all apps from the Steam API
- * @function SteamUtils#getAllSteamGames
+ * @function                 SteamUtils#getAllSteamGames
  * @return {Promise<Object>} A collection of Steam apps
  */
 SteamUtils.getAllSteamGames = async function () {
@@ -31,7 +31,8 @@ SteamUtils.getAllSteamGames = async function () {
 
 /**
  * Fetches app details from the Steam API
- * @function SteamUtils#getAppDetails
+ * @function                 SteamUtils#getAppDetails
+ * @param id {String}        The app id string
  * @return {Promise<Object>} The details of the Steam app
  */
 SteamUtils.getAppDetails = async function (id) {
@@ -45,27 +46,28 @@ SteamUtils.getAppDetails = async function (id) {
 }
 
 /**
- * Adds a game to the MongoDB collection
- * @function SteamUtils#addGame
- * @return {Promise<Object>}
+ * Checks if the game exists in the collection
+ * @function                  SteamUtils#doesGameExist
+ * @return {Promise<boolean>} True if the game exists
  */
-SteamUtils.addGame = async function (id) {
-  let details
-  if ((await SteamGame.exists({ steam_appid: id })) || id === null) {
-    logger(`Game ${id} exists, cancelling save`)
-    return
+SteamUtils.doesGameExist = async function (id) {
+  return SteamGame.exists({ steam_appid: id })
+}
+
+/**
+ * Adds a game to the MongoDB collection
+ * @function SteamUtils#addGame Adds a game to the DB
+ * @return {Promise<Object>}    The added game document
+ */
+SteamUtils.addGame = async function (gameDetails) {
+  if (gameDetails.steam_appid === null) {
+    throw new Error('appid is null, cancelling save.')
   }
   try {
-    details = await SteamUtils.getAppDetails(id)
-  } catch (error) {
-    logger(`Fetch app details failed: ${error}`)
-    return
-  }
-  try {
-    const newGame = new SteamGame(details)
+    const newGame = new SteamGame(gameDetails)
     const game = await newGame.save()
     logger(`Successfully added ${game.name}`)
-    return
+    return game
   } catch (error) {
     logger(`Save failed with error: ${error}`)
   }

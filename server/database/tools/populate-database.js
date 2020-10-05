@@ -39,17 +39,46 @@ async function populateDatabase (firstRun) {
 
     while (marker <= maxRuns) {
       const game = games[i]
+      i++
+
       if (game && (game.appid !== null || game.appid !== undefined)) {
-        try {
-          await SteamUtils.addGame(game.appid)
+        let gameDetails
+        const doesGameExist = await SteamUtils.doesGameExist(game.appid)
+
+        // First check if we already loaded this game into the DB
+        if (!doesGameExist) {
+          logger(`API Call: ${marker}`)
           marker++
-        } catch (error) {
-          logger(error)
+          try {
+            // The game doesn't exist in our db collection, get its details
+            gameDetails = await SteamUtils.getAppDetails(game.appid)
+          } catch (error) {
+            // Steam either removed the game or it has no record
+            gameDetails = false
+          }
+
+          if (!gameDetails) {
+            logger('Game not found, cancelling save.')
+          } else if (gameDetails.fullgame) {
+            logger('Game is not a full game, cancelling save.')
+          } else {
+            // All checks have passed, saving the game.
+            try {
+              await SteamUtils.addGame(gameDetails)
+            } catch (error) {
+              logger(error.message)
+            }
+          }
+        } else {
+          logger(
+            `Game ${game.appid} already exists in the DB collection, cancelling save.`
+          )
         }
       }
 
-      i++
-
+      /**
+       * Exit Checks
+       */
       if (i === games.length) {
         logger('All games added, exiting and closing DB connection')
         mongoose.connection.close()
