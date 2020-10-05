@@ -40,7 +40,7 @@ SteamUtils.getAppDetails = async function (id) {
     return appDetails
   } catch (error) {
     logger(`Game with id: ${id} not found.`)
-    return new Error('Game not found.')
+    throw new Error('Game not found.')
   }
 }
 
@@ -50,13 +50,22 @@ SteamUtils.getAppDetails = async function (id) {
  * @return {Promise<Object>}
  */
 SteamUtils.addGame = async function (id) {
-  logger(`Adding game ${id}`)
+  let details
+  if ((await SteamGame.exists({ steam_appid: id })) || id === null) {
+    logger(`Game ${id} exists, cancelling save`)
+    return
+  }
   try {
-    const details = await SteamUtils.getAppDetails(id)
+    details = await SteamUtils.getAppDetails(id)
+  } catch (error) {
+    logger(`Fetch app details failed: ${error}`)
+    return
+  }
+  try {
     const newGame = new SteamGame(details)
     const game = await newGame.save()
     logger(`Successfully added ${game.name}`)
-    return game
+    return
   } catch (error) {
     logger(`Save failed with error: ${error}`)
   }

@@ -3,12 +3,16 @@ const logger = require('debug')('steamroi:populate')
 const { connectDefaultDb } = require('../index')
 const mongoose = require('mongoose')
 
+let games
+let i = 0
+
 async function init () {
+  games = await SteamUtils.getAllSteamGames()
   // Connect Mongo Database
   connectDefaultDb()
     .then(() => {
       logger('Established default DB connection')
-      populateDatabase()
+      populateDatabase(true)
     })
     .catch(err => {
       logger(err)
@@ -16,21 +20,50 @@ async function init () {
     })
 }
 
-async function populateDatabase () {
-  const games = await SteamUtils.getAllSteamGames()
-  /**
-   * @todo convert this to a while loop and add in a setTimeout for 5 minutes
-   * after every 200 records that have been parsed.
-   * The Steam API will cancel requests if there are more than 200 every 5 minutes
-   */
-  for (let i = 60; i < 100; i++) {
-    const game = games[i]
-    if (game && game.appid) {
-      await SteamUtils.addGame(game.appid)
+/**
+ * Parses the Steam API for game data and inserts it into the database
+ * @function populateDatabase
+ * @param firstRun {boolean} If true, invoke load immediately
+ * @returns {null}
+ */
+async function populateDatabase (firstRun) {
+  const maxRuns = 200
+  const timeout = 5 * 60 * 1000 // 5 minutes
+  if (firstRun) {
+    load()
+    return
+  }
+
+  async function load () {
+    let marker = 0
+
+    while (marker <= maxRuns) {
+      const game = games[i]
+      if (game && (game.appid !== null || game.appid !== undefined)) {
+        try {
+          await SteamUtils.addGame(game.appid)
+          marker++
+        } catch (error) {
+          logger(error)
+        }
+      }
+
+      i++
+
+      if (i === games.length) {
+        logger('All games added, exiting and closing DB connection')
+        mongoose.connection.close()
+        return
+      }
+
+      if (marker === maxRuns) {
+        logger('Pausing operation for 5 minutes.')
+        populateDatabase()
+        return
+      }
     }
   }
-  logger('Closing default DB connection')
-  mongoose.connection.close()
+  setTimeout(load, timeout)
 }
 
 init()
