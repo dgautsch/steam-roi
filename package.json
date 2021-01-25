@@ -50,7 +50,7 @@
     "@babel/plugin-syntax-dynamic-import": "7.7.4",
     "@babel/preset-env": "7.7.4",
     "async": "2.6.0",
-    "axios": "0.19.2",
+    "axios": "0.21.1",
     "babel-loader": "8.0.6",
     "babel-plugin-component": "1.1.1",
     "bcrypt": "5.0.0",
