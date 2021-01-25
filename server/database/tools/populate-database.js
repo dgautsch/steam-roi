@@ -13,17 +13,16 @@ let games
 let i = 0
 
 async function init () {
-  games = await getAllSteamGames()
-  // Connect Mongo Database
-  connectDefaultDb()
-    .then(() => {
-      logger('Established default DB connection')
-      populateDatabase(true)
-    })
-    .catch(err => {
-      logger(err)
-      throw new Error(err.message)
-    })
+  try {
+    games = await getAllSteamGames()
+    // Connect Mongo Database
+    await connectDefaultDb()
+    logger('Established default DB connection')
+    populateDatabase(true)
+  } catch (error) {
+    logger(error)
+    throw new Error(error.message)
+  }
 }
 
 /**
