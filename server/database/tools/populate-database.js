@@ -1,4 +1,10 @@
-const SteamUtils = require('./steam-utils')
+const {
+  getAllSteamGames,
+  getAppDetails,
+  doesGameExist,
+  addGame,
+  updateGame
+} = require('./steam-utils')
 const logger = require('debug')('steamroi:populate')
 const { connectDefaultDb } = require('../index')
 const mongoose = require('mongoose')
@@ -7,7 +13,7 @@ let games
 let i = 0
 
 async function init () {
-  games = await SteamUtils.getAllSteamGames()
+  games = await getAllSteamGames()
   // Connect Mongo Database
   connectDefaultDb()
     .then(() => {
@@ -39,40 +45,39 @@ async function populateDatabase (firstRun) {
 
     while (marker <= maxRuns) {
       const game = games[i]
+      const { appid } = game
       i++
 
-      if (game && (game.appid !== null || game.appid !== undefined)) {
-        let gameDetails
-        const doesGameExist = await SteamUtils.doesGameExist(game.appid)
-
-        // First check if we already loaded this game into the DB
-        if (!doesGameExist) {
-          logger(`API Call: ${marker}`)
+      if (game && (appid !== null || appid !== undefined)) {
+        try {
+          logger(`API Call: ${marker + 1}`)
           marker++
-          try {
-            // The game doesn't exist in our db collection, get its details
-            gameDetails = await SteamUtils.getAppDetails(game.appid)
-          } catch (error) {
-            // Steam either removed the game or it has no record
-            gameDetails = false
-          }
-
+          const gameDetails = await getAppDetails(appid)
+          const isGameLoaded = await doesGameExist(appid)
           if (!gameDetails) {
             logger('Game not found, cancelling save.')
-          } else if (gameDetails.fullgame) {
-            logger('Game is not a full game, cancelling save.')
+          } else if (gameDetails.fullgame || !gameDetails.price_overview) {
+            // The fullgame document references the parent game
+            // It will exist if the game is an expansion or DLC
+            // We do not want to catalog these games because they are not counted
+            // towards play time and there are too many of them to store
+
+            // A missing price_overview usually indicates that the app is not
+            // available for purchase anymore or excluded from the store.
+            logger('Game does not meet requirements.')
           } else {
-            // All checks have passed, saving the game.
-            try {
-              await SteamUtils.addGame(gameDetails)
-            } catch (error) {
-              logger(error.message)
+            // First check if we already loaded this game into the DB
+            if (!isGameLoaded) {
+              // All checks have passed, saving the game.
+              await addGame(gameDetails)
+            } else {
+              logger(`Game ${game.appid} already exists in the DB collection.`)
+              await updateGame(gameDetails)
             }
           }
-        } else {
-          logger(
-            `Game ${game.appid} already exists in the DB collection, cancelling save.`
-          )
+        } catch (error) {
+          // Steam either removed the game or it has no record
+          logger(error.message)
         }
       }
 

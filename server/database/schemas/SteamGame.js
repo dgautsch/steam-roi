@@ -45,7 +45,11 @@ const SteamGameSchema = new mongoose.Schema({
   website: {
     type: String
   },
-  price_overview: SteamGamePriceSchema
+  price_overview: SteamGamePriceSchema,
+  date_added: {
+    type: Date,
+    default: Date.now
+  }
 })
 
 module.exports = mongoose.model('SteamGame', SteamGameSchema)

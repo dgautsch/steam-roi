@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // Support async/await
 require('regenerator-runtime/runtime')
 const path = require('path')
@@ -40,8 +41,8 @@ SteamUtils.getAppDetails = async function (id) {
     const appDetails = await SteamAPI.getGameDetails(id)
     return appDetails
   } catch (error) {
-    logger(`Game with id: ${id} not found.`)
-    throw new Error('Game not found.')
+    logger(`Could not get details for game with id: ${id}.`)
+    throw new Error(error.message)
   }
 }
 
@@ -70,5 +71,44 @@ SteamUtils.addGame = async function (gameDetails) {
     return game
   } catch (error) {
     logger(`Save failed with error: ${error}`)
+  }
+}
+
+/**
+ * Adds a game to the MongoDB collection
+ * @function SteamUtils#updateGame Updates a game in the DB
+ * @return {Promise<Object>}       The DB response
+ */
+SteamUtils.updateGame = async function (gameDetails) {
+  const { steam_appid } = gameDetails
+  if (steam_appid === null) {
+    throw new Error('appid is null, cancelling update.')
+  }
+  try {
+    const res = await SteamGame.updateOne({ steam_appid }, gameDetails)
+    logger(
+      `Successfully modified ${res.n} document(s) ${gameDetails.name} with app id ${steam_appid}`
+    )
+    return res
+  } catch (error) {
+    logger(`Update failed with error: ${error}`)
+  }
+}
+
+/**
+ * Adds a game to the MongoDB collection
+ * @function SteamUtils#getGame Gets a single game in the DB
+ * @return {Promise<Object>}    The DB response
+ */
+SteamUtils.getGame = async function (gameDetails) {
+  const { steam_appid } = gameDetails
+  if (steam_appid === null) {
+    throw new Error('appid is null, cancelling get.')
+  }
+  try {
+    const res = SteamGame.findOne({ steam_appid })
+    return res
+  } catch (error) {
+    logger(`Get failed with error: ${error}`)
   }
 }
